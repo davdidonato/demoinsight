@@ -1,0 +1,1329 @@
+﻿21 gen 2026
+Datadog <> RenewCast - Observability Demo - Trascrizione
+00:00:00
+ 
+Davide Di Donato: Ciao Alessandro, buongiorno, come stai?
+Alessandro Peyrachia: Tutto bene? Tu sei in ufficio?
+Davide Di Donato: Bene, bene, dai.
+Alessandro Peyrachia: No.
+Davide Di Donato: Sono in ufficio adam in una di questi pod minuscoli
+Alessandro Peyrachia: Ah,
+Davide Di Donato: dove
+Alessandro Peyrachia: bene, molto bene.
+Enrico Portolan: Ciao.
+Alessandro Peyrachia: Ciao Enrico, buongiorno, piacere.
+Davide Di Donato: verso metà chiamata inizierò a aprire la porta perché qua diventa una sauna dopo un'ora.
+Enrico Portolan: Aspetta.
+Davide Di Donato: Non l'hanno non l'hanno progettati molto bene questi pod, però vabbè. Eh, aspettiamo anche Marco per caso o non riesce a venire?
+Alessandro Peyrachia: Eh, scusami. No, Marco è malato oggi, eh, c'è un une catombe di di malati ultimamente tra questa settimana e la precedente. Siamo già siamo pochi, siamo a ranghi ridottissimi.
+Davide Di Donato: Ah,
+Alessandro Peyrachia: Comunque partiamo pure.
+Davide Di Donato: peccato.
+Alessandro Peyrachia: Sì, vabbè,
+Davide Di Donato: Va bene,
+Alessandro Peyrachia: poi gli racconto io. Partiamo, partiamo tranquilli
+Davide Di Donato: magari sì, sì, facciamo insieme, se vuoi un recap di di quello che è importante e poi eh tramite te gliel facciamo vedere.
+ 
+ 
+00:00:53
+ 
+Alessandro Peyrachia: tanto
+Davide Di Donato: Ok. Ehm, va bene. Eh, giusto un minuto di presentazioni. Alessandro ci siamo sentiti eh quando era un mesetto fa, penso ormai.
+Alessandro Peyrachia: sì.
+Davide Di Donato: eh un po' di più forse eh su appunto quello che è il progetto di
+Alessandro Peyrachia: Eh sì.
+Davide Di Donato: Renewcast eh per quanto riguarda il monitoraggio al momento eh abbiamo fatto un paio di conclusioni eh per appunto delle situazioni che che si si vengono a a creare adesso per quanto riguarda l'utilizzo magari di diversi tool per fare delle cose adiacenti che Datad poi alla fine può centralizzare e può unire e quindi oggi andremo a vedere insomma, questo progetto principale e molte altre cose che Enrico che Enrico ti farà vedere. Infatti presento Enrico che è il nostro Solution Architect.
+Enrico Portolan: Ciao. Ciao Alessandro,
+Alessandro Peyrachia: Ciao,
+Davide Di Donato: Ok,
+Enrico Portolan: piacere.
+Alessandro Peyrachia: piacere.
+Davide Di Donato: io passo passo la palla a Enrico. Se c'è qualsiasi domanda, magari prima di iniziare qualcosa a livello di impostazione, qualsiasi cosa, fammi sapere e ovviamente se se vuoi interrompere nel frattempo fai senza problemi. E Enrico, ti dicevo già Alessandro ha già usato Datal Dog nel passato,
+Enrico Portolan: Sì.
+ 
+ 
+00:02:10
+ 
+Davide Di Donato: quindi eh insomma
+Alessandro Peyrachia: Sì, qualcosina. Eh,
+Enrico Portolan: Quanti quanto tempo fa più o meno?
+Davide Di Donato: Ok.
+Alessandro Peyrachia: eh. Un annetto e mezzo fa, credo.
+Enrico Portolan: Ok,
+Alessandro Peyrachia: Sì,
+Enrico Portolan: quindi hanno aggiunto un po' di cose,
+Alessandro Peyrachia: circa un anno e mezzo fa. Sì. Eh,
+Enrico Portolan: un po' di cose nuove ci sono.
+Alessandro Peyrachia: sì,
+Enrico Portolan: E mi diceva Davide, quindi che l'ambiente è tutto su su Asure, giusto?
+Alessandro Peyrachia: sì,
+Enrico Portolan: con Kubernetis e eh diciamo le cose principali che
+Alessandro Peyrachia: praticamente tutto. Sì.
+Enrico Portolan: stavi raccontando lui sono uno ovviamente cercare magari di centralizzare tutto in
+Alessandro Peyrachia: Ok,
+Enrico Portolan: una singola piattaforma, poi la questione quella di datab che vorresti migrare a airflow
+Alessandro Peyrachia: allora sì, adesso stiamo stiamo iniziando a lavorare per migrare Datab verso airflow e al momento su databaks abbiamo del monitoraggio con embed di databs, quindi vai a vederti il job e guardi cosa cosa ha fatto. Non c'è niente di particolare.
+Enrico Portolan: Ok.
+Alessandro Peyrachia: Abbiamo poi settato noi delle delle qui per con delle thell specifiche per vedere se qualcosa si rompe oppure se andiamo fuori quota o cose del genere.
+ 
+ 
+00:03:10
+ 
+Alessandro Peyrachia: Quindi non è che abbiamo un grande monitoraggio. Ehm quello che vogliamo fare è appunto è uscire da Ratabrix e cominciare a usare Airflow per orchestrare i nostri job. Airflow sarà sarà è già postato all'interno di Cubernetes, quindi soluzione KS di di Eju, niente di homem madeade, è già già un lavoro abbastanza complicato così.
+Enrico Portolan: Okay.
+Alessandro Peyrachia: Ehm e niente, quindi la parte di di observability e sarà principalmente basata su cubernetes, cioè sarà basata sarà principalmente l'oggetto principale sarà Cubernetes perché poi abbiamo oltre alla parte di workflow e quant'altro c'è poi la parte di applicazione front-end è un portale di dove i clienti possono collegarsi, guardare eh le metriche del dei loro plant, scaricare i report, in generale report, quindi vabbè,
+Enrico Portolan: Ok.
+Alessandro Peyrachia: un'applicazione tre tire normalissima, niente di esagerato e basta. E poi quindi diciamo che il la visibilità che vorremmo avere dentro
+Enrico Portolan: Ok.
+Alessandro Peyrachia: Cubernetes, dentro l'applicazione, se c'è qualcosa per Airfow interessante eventualmente aggiungere qualcosa sulla sulla cloud, sulla parte cloud, quindi sottoscrizione e quant'altro.
+Enrico Portolan: Ok. E lato, quindi anche lato frontend ti ti ti può interessare avere visibilità?
+ 
+ 
+00:04:30
+ 
+Alessandro Peyrachia: Sì, sì, abbiamo Sì, abbiamo adesso abbiamo cominciato a mettere Open Telemetry per vedere un po' eh
+Enrico Portolan: Ok.
+Alessandro Peyrachia: adesso abbiamo ho abbiamo preparato due installazioni di già di qualcosa di observability monitoraggio per avere un'idea di cosa vogliamo fare perché sennò non cioè non sapevamo neanche da dove partire e quindi stiamo tracciando un po' con pentelemetri eh le solite cose e quindi sì, ci ovviamente ci interessa avere visibilità sia sul frontend che
+Enrico Portolan: M ok,
+Alessandro Peyrachia: suckend.
+Enrico Portolan: perfetto.
+Davide Di Donato: La visibilità se che avete adesso sul front-end è più a livello di monitoraggio utente reale o
+Enrico Portolan: Co?
+Davide Di Donato: anche di
+Alessandro Peyrachia: No, no,
+Davide Di Donato: test?
+Alessandro Peyrachia: solo solo come si chiama, solo le metriche interne del front-end.
+Davide Di Donato: Ah, ok,
+Alessandro Peyrachia: Quindi non c'è non c'è la parte di user,
+Davide Di Donato: ok.
+Enrico Portolan: Quindi cos'è?
+Alessandro Peyrachia: ma diciamo monitoring user,
+Enrico Portolan: Tempo di mh mh tempo di caricamento,
+Alessandro Peyrachia: scusa. Sì,
+Enrico Portolan: quelle cose lì.
+Alessandro Peyrachia: quelle cose metriche classiche di insomma quello che può fare è un frontend statico in React,
+ 
+ 
+00:05:22
+ 
+Enrico Portolan: Ok.
+Alessandro Peyrachia: quindi non cioè non c'è molto molto da dire,
+Enrico Portolan: Ok.
+Alessandro Peyrachia: insomma, abbiamo
+Enrico Portolan: Quindi i vostri clienti, giusto per capire,
+Alessandro Peyrachia: strumentato.
+Enrico Portolan: sono poi quelli nelle varie, diciamo, centrali che usano il portale e e capiscono cosa devono fare.
+Alessandro Peyrachia: Sì. Allora, il nostro cliente tipo è un, diciamo, una una persona del business del produttore energetico che eh verifica appunto dati di produzione e dati di predizione, soprattutto, visto che noi facciamo quello, predizione della produzione.
+Enrico Portolan: Sì.
+Alessandro Peyrachia: Ehm, quindi è un utente sulla questione di energetica, ma non è un utente tecnico, diciamo, sulla parte informatica magari, no? Quello che ci interessa a noi è che il portale sia semplice da vedere e sostanzialmente nel portale ci sono due cose da guardare,
+Enrico Portolan: Co?
+Alessandro Peyrachia: i grafici, quindi abbiamo abbiamo un portale che disegna grafici e quindi bisogna vedere quello che ci interessa vedere è come risponde il portale nel caricamento del Time Series per creare il il grafico,
+Enrico Portolan: Ok.
+Alessandro Peyrachia: per esempio. E poi la seconda parte è quella di gestione invece degli export delle dei report e quelle cose lì che sono cose che vengono mandate o tramite STTP o mandate tramite altre modalità.
+ 
+ 
+00:06:39
+ 
+Alessandro Peyrachia: Eh e quindi diciamo queste due parti principali entrambe si appoggiano sulle PI che ovviamente va a fare l'interrogazione dietro eh sui nostri database su dove ci sono tutta la parte di tutti i dati che vengono lavorati dal dai modelli di machine learning. Quindi quello che ci interessa alla fine è vedere front-end, vedere l'PI come risponde. L'PI può essere chiamata dal front-end oppure può essere chiamata dal cliente direttamente se non vuole usare il front-end.
+Enrico Portolan: Ah,
+Alessandro Peyrachia: Quindi ci sono l'aspetto è lo stesso,
+Enrico Portolan: ok. Ok, ok.
+Alessandro Peyrachia: è un è un front è un backend classico che può erog eroga i dati sia al frontend che al cliente direttamente e non ci sono giri strani all'interno,
+Enrico Portolan: Ottimo,
+Alessandro Peyrachia: è tutto trasparente. Quindi quello che vogliamo vedere appunto è come reagisce il backend,
+Enrico Portolan: ottimo.
+Alessandro Peyrachia: il front end comporta con il cliente e basta, sostanzialmente quello. Poi se se riusciamo a vedere qualcosina, in realtà con Opel Telemetry abbiamo già strumentato qualcosa sul backend, vediamo anche la parte Postgress, quindi dietro abbiamo un Postgress ovviamente,
+Enrico Portolan: Ok.
+Alessandro Peyrachia: quindi vediamo come girano le chiamate e quant'altro.
+ 
+ 
+00:07:39
+ 
+Enrico Portolan: Ok.
+Alessandro Peyrachia: Quindi insomma questo l'ambito è
+Enrico Portolan: Poi se se diciamo eh l'open telemetry sano
+Alessandro Peyrachia: quello.
+Enrico Portolan: requisito eh è anche supportato su su datog, anzi sono pare che sia il terzo contributor a livello mondiale su su quel progetto,
+Alessandro Peyrachia: Sì, sì, sì, sì.
+Enrico Portolan: quindi non non è un problema. Allora, eh magari possiamo iniziare da faccio vedere, faccio magari un refresh di come si integra e e poi ti faccio vedere quelle parti che appunto mi hai scritto tu. quindi monitoraggio infrastruttura cibernetis.
+Alessandro Peyrachia: Sì.
+Enrico Portolan: Abbiamo anche un modulo dedicato ai detta jobs sia che sia su datab che su airflow, quindi vedere anche quello. E poi appunto tutta la parte di correlazione tra APM, front-end, eccetera eccetera.
+Alessandro Peyrachia: Ok.
+Enrico Portolan: Eh,
+Alessandro Peyrachia: Ok.
+Enrico Portolan: ok, top. Come diceva Davide, se hai domande bloccami pure,
+Alessandro Peyrachia: Sì, sì,
+Enrico Portolan: non ho non è un problema.
+Alessandro Peyrachia: sì. Ok. Vai,
+Enrico Portolan: Ok,
+Alessandro Peyrachia: vai pure a ruota libera, io chiedo
+Enrico Portolan: ok, ok. Tranquillo.
+ 
+ 
+00:08:39
+ 
+Enrico Portolan: Allora, ehm, non se ti ricordi stanza per partire con l'integrazione di dato due step principali, quindi la parte di integrazione che comprende sia integrazioni basate su API, la classica nel vostro caso sarebbe quella di Azure.
+Alessandro Peyrachia: Sì,
+Enrico Portolan: Quello che fa è che si crea un taanto,
+Alessandro Peyrachia: sì,
+Enrico Portolan: adesso mi ricordo,
+Alessandro Peyrachia: la
+Enrico Portolan: app registration su eh su Azure e quello che fa alla fine è
+Alessandro Peyrachia: progresion
+Enrico Portolan: pullare delle metriche dal dal vostro account. Ovviamente è tutto configurabile, quindi posso selezionare quali servizi.
+Alessandro Peyrachia: cosa prendere, quale no. Ok,
+Enrico Portolan: Esatto.
+Alessandro Peyrachia: ottimo.
+Enrico Portolan: Posso fare sia a livello di servizio global, diciamo,
+Alessandro Peyrachia: Sì.
+Enrico Portolan: o anche se voglio magari voglio solo fare dei filtri di inclusione esclusione per certi host. Esempio classico è voglio solo gli host prodare.
+Alessandro Peyrachia: Sì. Ok.
+Enrico Portolan: Faccio un filtro che può chiamare un datogg true e prende solo quelli. Ok?
+Alessandro Peyrachia: Ok.
+Enrico Portolan: Quindi posso fare usare entrambi entrambi i metodi.
+Alessandro Peyrachia: Perfetto.
+Enrico Portolan: Questo appunto è PAS.
+ 
+ 
+00:09:37
+ 
+Enrico Portolan: Ci sono altre integrazioni che sono eh basate sul datad agent. Quindi l'unica cosa da fare è aggiungere un piccolo file YamL per raggiungere quell'integrazione. Ad esempio, mi sa che Airfow funziona così. Quindi se voglio pullare le metriche di airflow, quello che dovrò fare è dirgli in sostanza alle agent, senti, connettiti qua.
+Alessandro Peyrachia: Sì,
+Enrico Portolan: Ok,
+Alessandro Peyrachia: ma giravo zitto.
+Enrico Portolan: quindi stessa cosa per iB queste cose qui. Quindi questi, diciamo, sono parti di integrazione, sono tra l'altro tutte sviluppate da da Datado, quindi anche se ci sono problemi il team di supporto può aiutare. Sono adesso sono più di 1000, però di base ne aggiungono sempre di nuove ogni settimana.
+Alessandro Peyrachia: Ok.
+Enrico Portolan: Ehm, questo primo step, diciamo quello più immediato. Il secondo eh è quello del dell'agente del datog agent,
+Alessandro Peyrachia: Sì,
+Enrico Portolan: quindi nel vostro caso sarà full su cubernetisure e
+Alessandro Peyrachia: sì, sì, sì.
+Enrico Portolan: funziona principalmente con Esatto con l'operator o puoi usare
+Alessandro Peyrachia: Certello.
+Enrico Portolan: anche ch se preferisci,
+ 
+ 
+00:10:43
+ 
+Alessandro Peyrachia: Sì, sì, sì,
+Enrico Portolan: però alla fine vedo Esatto.
+Alessandro Peyrachia: sì. Tanto uguale più o
+Enrico Portolan: Esatto. Identico qua, eh. Eh, tu cos'è che fai?
+Alessandro Peyrachia: meno.
+Enrico Portolan: Decidi cosa vuoi far monitorare alla gente. Quindi voglio fare solo infrastruttura, voglio fare anche la PM, voglio fare i log. Ehm, questo livello generale. Poi ovviamente eh so che avate discusso velocemente di security, poi magari ce lo teniamo per una prossima call, eventualmente c'è anche una parte di di security fatta dall'agen.
+Alessandro Peyrachia: Ok.
+Enrico Portolan: Eh, qui vedi il nostro amico Open Telemetry, quindi se vuoi fa anche da collector di di Open Telemetry,
+Alessandro Peyrachia: Sì. Ok. Ottimo.
+Enrico Portolan: poi quello magari di nuovo lo discutiamo nel dettaglio più avanti. Qual è l'idea? Che appunto lui ti crea un file di configurazione da applicare poi a quell'operator di prima e fa tutto lui,
+Alessandro Peyrachia: Sì,
+Enrico Portolan: no?
+Alessandro Peyrachia: sì, sì,
+Enrico Portolan: Quindi fa monitoraggio infra,
+Alessandro Peyrachia: sì,
+Enrico Portolan: il tracing dell'applicazione, non deve aggiungere niente lato codice, lato applicativo,
+ 
+ 
+00:11:42
+ 
+Alessandro Peyrachia: ok.
+Enrico Portolan: cos'è che usate su diciamo come Python?
+Alessandro Peyrachia: Python è tutto Python al momento,
+Enrico Portolan: Ok, quindi,
+Alessandro Peyrachia: poi chi lo sa, però adesso Python ci sta. Ce la facciamo con
+Enrico Portolan: ok, ok, ottimo.
+Alessandro Peyrachia: Python.
+Enrico Portolan: Eh, quindi di base questo lui cos'è che fa? Crea, probabilmente, lo sai già, un agent per ogni nodo e da lì fa,
+Alessandro Peyrachia: Sì.
+Enrico Portolan: ok, il monitoraggio e quindi,
+Alessandro Peyrachia: Ok,
+Enrico Portolan: diciamo, questi due step abbiamo fatto e iniziamo ad avere dei dati che arrivano in datalook. Ehm,
+Alessandro Peyrachia: lì nella configurazione posso posso decidere eventualmente se mettere in
+Enrico Portolan: Questo St.
+Alessandro Peyrachia: whitist solo alcuni nam space, per esempio, prendere solo un certo tipo di oggetti, che so, voglio solo i log dei pod o i log di boh,
+Enrico Portolan: Sì,
+Alessandro Peyrachia: i deployment che si chiamano così. Ah, ok, perfetto.
+Enrico Portolan: sì,
+Alessandro Peyrachia: Ok. Target space. Ok,
+Enrico Portolan: hai sia namespace sia per i log puoi usare sia il nome
+Alessandro Peyrachia: ok,
+ 
+ 
+00:12:37
+ 
+Enrico Portolan: del del pod, il nome dell'immagine o di nuovo il namespace.
+Alessandro Peyrachia: ok.
+Enrico Portolan: Puoi fare anche eh Sì,
+Alessandro Peyrachia: Un mix.
+Enrico Portolan: logiche inclusione,
+Alessandro Peyrachia: Ok,
+Enrico Portolan: esclusione. Puoi fare quello che vuoi.
+Alessandro Peyrachia: ok, perfetto. Quindi sì,
+Enrico Portolan: Ok.
+Alessandro Peyrachia: posso tunare quello che mi serve solo, visto che i poi che scrivono di più dentro sono quelli di Asure, che francamente mi interessa fino a un certo
+Enrico Portolan: Sì, sì,
+Alessandro Peyrachia: punto.
+Enrico Portolan: puoi anche usare regular expression per togliere tipo tutti quelli che iniziano per, non so, A C non mi interessano per dire.
+Alessandro Peyrachia: Ok,
+Enrico Portolan: ed è è comodo perché lo fai tutto da qui poi,
+Alessandro Peyrachia: ottimo,
+Enrico Portolan: quindi hai un posto centralizzato in cui puoi fare questi questi cambi.
+Alessandro Peyrachia: ottimo.
+Enrico Portolan: Ehm Ok, poi da qui direi possiamo andare a vedere la parte di infrastruttura. Quindi abbiamo installato l'agent, abbiamo messo le integrazioni, la prima parte interessante è l'overview sull'ambiente eh di Cubernetis.
+Alessandro Peyrachia: Sì.
+Enrico Portolan: Quindi qua tu vedi tutti i tuoi nodi, i tu space, i cluster, qui ti fa l'analisi dei costi, eh puoi legarlo sia al building di Azure o usa dei benchmark, diciamo, di di mercato,
+ 
+ 
+00:13:43
+ 
+Alessandro Peyrachia: Ok.
+Enrico Portolan: però magari ci concentriamo sulla parte di eh trouble shooting e ottimizzazione delle risorse. Quindi di base c'ha lui ti dà dei template su non so pod magari che si stanno reviando o deployment che non hanno delle repliche, insomma, ti dà un po' un po' di scenari, no, in come idea.
+Alessandro Peyrachia: Sì.
+Enrico Portolan: Poi ovviamente nel day today,
+Alessandro Peyrachia: Ok.
+Enrico Portolan: diciamo, non sto a guardare tutto da tempo il le dashboard o questo overview, quello che diciamo è comodo che di base lui ti crea in automatico dei monitoraggi, ovviamente in base a quello che hai installato. Nel nostro caso abamo installato Cubernetis,
+Alessandro Peyrachia: Ok.
+Enrico Portolan: quindi lui ti eh ti genera questi template, quindi su di nuovo nodi non disponibili dei PO,
+Alessandro Peyrachia: Sì. Grazie. classiche metriche.
+Enrico Portolan: esatto. classiche metriche poi tu con un click puoi configurare e decidere cosa fare.
+Alessandro Peyrachia: Ok.
+Enrico Portolan: Se vuoi farlo su una basato su una threshold fissa, se usare normal detection, insomma, puoi fare vari tipi di di monitoraggi.
+Alessandro Peyrachia: Ok.
+Enrico Portolan: Ok?
+Alessandro Peyrachia: Interessante
+Enrico Portolan: Ehm, ovviamente poi quando ricevi la notifica,
+ 
+ 
+00:14:49
+ 
+Alessandro Peyrachia: questo.
+Enrico Portolan: ti faccio vedere dopo un po' meglio come funzionano il monitoraggio, hai esattamente l'indicazione di cosa è fallito. In sostanza lui risolve delle variabili, quindi ti dice qual è il pod che ha avuto il problema.
+Alessandro Peyrachia: C'è problema.
+Enrico Portolan: Ok,
+Alessandro Peyrachia: Ok.
+Enrico Portolan: quindi questo diciamo come overview principale di nuovo, eh tieni conto che per ehm gli ambienti che abbiamo installato,
+Alessandro Peyrachia: Ok.
+Enrico Portolan: quelle integrazioni che hai visto all'inizio, lui in automatico ti genera dei template anche a livello di dashboard. Quindi eh tu le avevi usate nei dashboard su Datadog prima?
+Alessandro Peyrachia: Sì, sì,
+Enrico Portolan: Sì.
+Alessandro Peyrachia: sì, sì.
+Enrico Portolan: Ok.
+Alessandro Peyrachia: Ho ho già usato qualcosina. Sì,
+Enrico Portolan: Ok. Ottimo.
+Alessandro Peyrachia: sì,
+Enrico Portolan: Quindi da qui tu hai dei template comodi e per qualsiasi grafico puoi cliccare, andare a vedere quali sono gli host,
+Alessandro Peyrachia: sì.
+Enrico Portolan: quali sono le trace che stanno provocando questo problema. Quindi, già da qui vedi tutta quella parte di eh diciamo correlazione che stavamo discutendo all'inizio.
+Alessandro Peyrachia: Ottimo.
+ 
+ 
+00:15:49
+ 
+Alessandro Peyrachia: Sì, sì, altrimenti diventa un macello gestire capire cosa succede.
+Enrico Portolan: Eh
+Alessandro Peyrachia: È già è impossibile senò senza correlazione dentro Kubernetes capire, però va bene,
+Enrico Portolan: esatto. Ma tu fai solo la parte,
+Alessandro Peyrachia: ottimo.
+Enrico Portolan: diciamo, devo o ti occupi anche poi dello sviluppo applicativo?
+Alessandro Peyrachia: Io non sono uno sviluppatore, ma faccio tutto il resto,
+Enrico Portolan: Ok. Ok.
+Alessandro Peyrachia: quindi faccio il DevOps molto più che,
+Enrico Portolan: Ottimo.
+Alessandro Peyrachia: cioè il DevOps veramente a ad ampissimo spettro. Non sviluppo,
+Enrico Portolan: Ok.
+Alessandro Peyrachia: scrivo codice anch'io perché tanto ormai tutti scriviamo codice, eh, però non sono uno sviluppatore,
+Enrico Portolan: Sì.
+Alessandro Peyrachia: quindi backend e frontend non li non li scrivo io, non scrivo i il codice che generano le modelli machine learning, non scrivo quelle cose lì, però scrivo altro codice che mi serve per gestire magari infrastruttura o eseguire
+Enrico Portolan: Ok.
+Alessandro Peyrachia: report, trashing,
+Enrico Portolan: Ok.
+Alessandro Peyrachia: tutte quelle
+Enrico Portolan: Ok, ok, perfetto.
+Alessandro Peyrachia: così.
+Enrico Portolan: Perché appunto anche quello saranno poi la parte di dashboard di correlazione,
+ 
+ 
+00:16:45
+ 
+Alessandro Peyrachia: Sì.
+Enrico Portolan: perché se il developer ti dice guarda che le PI è andate in errore, sicuramente il pod che è esploso, tu vai lì, vedi la trace e dici "No, questo pod stava bene perché ho visto la metrica già già correlata".
+Alessandro Peyrachia: Sì, sì, sì. Questo nella nella mia idea,
+Enrico Portolan: Ehm M.
+Alessandro Peyrachia: tanto siamo quattro gatti e poi un un tool che devono poter utilizzare tutti quanti, quindi eh non mi ricordo. Eh ci sono si fa un team e si tirano dentro le persone, immagino, eh dentro un certo account,
+Enrico Portolan: Esatto,
+Alessandro Peyrachia: quindi non c'è non ci sono problemi di questo genere.
+Enrico Portolan: esatto. Tieni conto che anche uno delle degli obiettivi di datog non è appunto lo vedi anche già dalle licenze,
+Alessandro Peyrachia: Ok.
+Enrico Portolan: quindi le licenze non sono per user, ma è per numero di di host principalmente.
+Alessandro Peyrachia: Sì, sì.
+Enrico Portolan: Poi ovviamente David te lo spiegherà,
+Alessandro Peyrachia: Ok.
+Enrico Portolan: però l'idea appunto è far lavorare i vari team insieme, quindi avere puoi aggiungere gli user che vuoi, li puoi organizzare per team e poi da lì lavorate insieme su app, DevOps, log in base a quello che che vi serve.
+ 
+ 
+00:17:41
+ 
+Alessandro Peyrachia: Perfetto. Ottimo.
+Enrico Portolan: Ehm, poi c'è la pagina di Explorer che eh ti fa vedere tutti i pod attivi quasi su in in real time e puoi vedere sia sotto il punto di vista dei pod, dei nodi, in base in base a quello che ti serve. Ehm, hai dei filtri sulla sinistra per andare a filtrare ovviamente quello che vuoi andare a cercare, sia su vari tag che può prendere sia dall'ambiente Ager che è già,
+Alessandro Peyrachia: Sì.
+Enrico Portolan: quindi replica quei tag che che ha lui o anche dei tag estratti, diciamo, dal dalla gente. Se voglio andare a farti un esempio, magari di un pod che contiene un applicativo,
+Alessandro Peyrachia: Ok.
+Enrico Portolan: ad esempio, io so che questo servizio di Rubion Race è su questi pod e ho bisogno di andare a vedere uno lo stato del pod e se
+Alessandro Peyrachia: Sì.
+Enrico Portolan: ci sono chiamate a livello di APM, se ci sono dei log. io lo posso fare direttamente da qui. Quindi qui vedo il il pod che mi sta sta eseguendo il mio applicativo, la configurazione del podlo eh cambia
+Alessandro Peyrachia: Sì.
+Enrico Portolan: poco. Qui posso vedere dov'è nel mio, diciamo, nella mia architettura Cubernetis.
+ 
+ 
+00:18:53
+ 
+Alessandro Peyrachia: Ok.
+Enrico Portolan: Credo che su questo cluster questo è il mio nodo e questi sono i container di eh di questo pod, anzi i processi. In questo caso il container è questo qui. Qui hai quelle metriche a livello di macchina che come dicevo all'inizio, quindi classiche CPU, memoria eccetera eccetera,
+Alessandro Peyrachia: Sì.
+Enrico Portolan: ma nella stessa schermata se vuoi puoi anche vedere l'applicativo, quindi tutte le API, call o insomma le richieste che arrivano al servizio che sta eseguendo il mio pod.
+Alessandro Peyrachia: Ok.
+Enrico Portolan: Quindi dico qua, immagine che sia il tuo web app di di Python,
+Alessandro Peyrachia: Sì, sì, sì.
+Enrico Portolan: eh, e da qui puoi dire "Ok, qua è tutto ok, se voglio posso filtrare per quelle che falliscono, per dire, e quindi da qui me le vedo tranquillamente nella stessa pagina." Ok?
+Alessandro Peyrachia: Ok.
+Enrico Portolan: Stesso discorso per i log, quindi stessa idea. Poi ti faccio vedere un esempio anche per quanto riguarda i log. E un'altra cosa che vedo utilizzare spesso è abbiamo un modulo di travel shooting, quindi in questo caso è un pod running, però potremmo fare un esempio di un pod che è in errore, quindi eh se ho magari degli errori su dei pod,
+Alessandro Peyrachia: Ah, quo
+ 
+ 
+00:20:06
+ 
+Enrico Portolan: lui ti può far vedere ad esempio dove sta esplodendo. In questo caso, ok? è il container che è riavviato molte volte o eh magari è il prob livess che non che non funziona.
+Alessandro Peyrachia: Ok,
+Enrico Portolan: Insomma, vedi eh per ogni ehm risorsa dentro CNT riesci a vedere dove sta fallendo e ti spiega anche perché. Ok?
+Alessandro Peyrachia: ottimo. Buono. Sì, sì.
+Enrico Portolan: Ehm quindi questo e in più di nuovo c'è anche la parte di quei monitor che hai fatto vedere prima. Eh, se vuoi ovviamente sono targetizzati anche sul sul singolo pod, quindi tu qua sai che infatti se questo in OM killed ti arriva
+Alessandro Peyrachia: Mh.
+Enrico Portolan: questa notifica con il suo podname, quindi hai diciamo
+Alessandro Peyrachia: Ok, ottimo. Sì, così vedo vedo cosa si sta rompendo. Ottimo. Fa qualche aggregazione anche a livello di, non so, tipo di applicazione che magari io posso definire un'applicazione custom con dentro 4- C pod, insomma, cose del genere. Eh, quello che che a volte è più interessante vedere la appunto la correlazione che c'è magari tra due pod
+Enrico Portolan: Sì.
+ 
+ 
+00:21:16
+ 
+Alessandro Peyrachia: all'interno della stessa applicazione. Adesso, nel nostro caso fa ridere perché sono tre pod l'applicazione con più repliche,
+Enrico Portolan: Ok.
+Alessandro Peyrachia: però sai, prima o poi qualcuno vorrà tirare fuori un pezzo dell'applicazione e trasformarli in un microservizio,
+Enrico Portolan: Chiaro.
+Alessandro Peyrachia: quindi
+Enrico Portolan: Certo. Sì. Sì, la puoi fare in diversi modi.
+Alessandro Peyrachia: tanto
+Enrico Portolan: Il più semplice, ti direi, ti definisci tu una tag dentro quei deployment in
+Alessandro Peyrachia: Sì.
+Enrico Portolan: cui si chiama, non so, applicativo XY e quindi TUC può anche raggruppare per dire per vediamo se lo faccio ad esempio
+Alessandro Peyrachia: Sì.
+Enrico Portolan: per servizio, solo che qui ne avrò tantissimi, quindi qua io ho tutti quanto. Questa è la mia applicazione di questo è un e-commerce in sostanza questo è un DNET di authentication.
+Alessandro Peyrachia: Sì.
+Enrico Portolan: Io qua posso vedere tutti i pod che fanno riferimento a quell'app. Nel tuo caso fai la stessa cosa, però metti una label, anzi scusami, una label su eh il pod, quello che fa il DB, quello che fa l'applicativo, quello che ti fa, non so,
+Alessandro Peyrachia: Sì.
+ 
+ 
+00:22:14
+ 
+Enrico Portolan: il job e lo puoi usare sia come group buy, oppure puoi dire eh app, ad esempio, se c'era quello di app, esatto, app, la tua,
+Alessandro Peyrachia: Ok,
+Enrico Portolan: filtrami solo i pod di quell'app, quindi lo puoi fare in quel in quel modo lì.
+Alessandro Peyrachia: ok, ottimo. Ok,
+Enrico Portolan: Ok?
+Alessandro Peyrachia: si può fare.
+Enrico Portolan: Tieni conto che tutto è tutto basato su sui tag che aggiung ne puoi aggiungere quanti
+Alessandro Peyrachia: Sì.
+Enrico Portolan: quanti ne vuoi. Magari già dal nodo dal cluster riesci a avere una visualizzazione secondo me e su quella su quell'applicazione che dicevi tu oppure definisci tu una
+Alessandro Peyrachia: Ok,
+Enrico Portolan: custom.
+Alessandro Peyrachia: ci sta. Sì, sì.
+Enrico Portolan: Ok.
+Alessandro Peyrachia: Insomma, ovviamente è customizzato, nessuno sa la la struttura delle proprie applicazioni, meglio di noi, quindi è importante che si possa fare.
+Enrico Portolan: Esatto, esatto. Poi tieni conto che a proposito di questo,
+Alessandro Peyrachia: Perfetto.
+Enrico Portolan: se eh io torno un attimo su questa app, perché so che è l'unica che c'ha dei dati decenti in questo ambiente, tieni conto che quella cosa che mi stavi dicendo tu adesso lo puoi vedere anche dalla PM,
+ 
+ 
+00:23:21
+ 
+Alessandro Peyrachia: Sì.
+Enrico Portolan: perché se io apro l'applicazione lui cos'è che fa? mi genera uno. Eh, qui ho cliccato dal pod applicativo al modulo di APM, no? Quindi monitoraggio applicativo. Da qui lui cos'è che fa?
+Alessandro Peyrachia: Sì.
+Enrico Portolan: Analizzando il traffico ti crea già un graffo di dipendenze. Ok? Quindi io qui posso vedere fai finta che questo è il tuo Python web server e
+Alessandro Peyrachia: Ok. Sì.
+Enrico Portolan: qua c'hai la questo è il web UI nostro, quindi il nostro e-commerce. Questo sarà il tuo che è il l'APSAM. Parla col mio web server. E qua vedo tutti i servizi, ho i pod, insomma, qua vedi che c'è Redis,
+Alessandro Peyrachia: Sparalo dietro.
+Enrico Portolan: qua c'è un Quindi questo,
+Alessandro Peyrachia: Ok,
+Enrico Portolan: tra l'altro,
+Alessandro Peyrachia: ottimo.
+Enrico Portolan: è creato in maniera dinamica e quindi non dovete fare nulla lato vostro si aggiorna in base al
+Alessandro Peyrachia: Sì, sì,
+Enrico Portolan: traffico e alle trace che lui vede.
+Alessandro Peyrachia: ok.
+Enrico Portolan: Ok?
+ 
+ 
+00:24:14
+ 
+Enrico Portolan: Eh, magari questo sì, potrebbe essere in effetti in effetti utile su quello che mi dicevi
+Alessandro Peyrachia: Mh, sì, questo sì, non c'è tantissimo da traffico adesso in realtà da vedere,
+Enrico Portolan: perché
+Alessandro Peyrachia: nel senso ci sono veramente tre servizi,
+Enrico Portolan: mh mh
+Alessandro Peyrachia: quindi è abbastanza semplice la la visualizzazione in questo caso,
+Enrico Portolan: M.
+Alessandro Peyrachia: però già avere la visualizzazione complessiva dell'applicazione, vedere se ci sono, per esempio, delle latenze esagerate andando verso il database o cosa del genere, ci dà una buona una buona visibilità, diciamo. Adesso è molto semplice, cioè fa anche ridere attivarlo su un'applicazione del genere,
+Enrico Portolan: Sì,
+Alessandro Peyrachia: però intanto bisogna vedere scovare subito le problematiche.
+Enrico Portolan: mi diceva Davide che la parte, diciamo, quella più grossa è quella di dei job, giusto?
+Alessandro Peyrachia: Eh sì, sì, quella è la parte più interessante, cioè il core business sta lì,
+Enrico Portolan: dati.
+Alessandro Peyrachia: eh il frontend, sì, è il modo per ovviamente per prendere i clienti e dargli le informazioni, però diciamo che la la parte mission critical è quella del dei job,
+Enrico Portolan: Certo.
+Alessandro Peyrachia: il resto è, diciamo, il business su quello
+ 
+ 
+00:25:17
+ 
+Enrico Portolan: Ok. Magari magari
+Alessandro Peyrachia: su boh, vai pure. Nel senso,
+Enrico Portolan: possiamo
+Alessandro Peyrachia: la parte di per la parte di applicazione portale, secondo me, siamo a posto così, nel senso c'è proprio tutto quello che ci serve. C'è già anche molto molto oltre.
+Enrico Portolan: m Sì,
+Alessandro Peyrachia: Andiamo.
+Enrico Portolan: sì, sì. No, infatti per quello anche stavo pensando, no, ovviamente probabilmente l'hai anche già visto su le varie funzionalità della PM. tu per ogni richiesta che arriva all'applicativo, se vuoi puoi andare a vedere, faccio vedere magari una con un errore così è più chiaro, però qual è l'idea che puoi andare a vedere tutto quello che è successo all'interno di qualsiasi chiamata, quale IPI ha chiamato, quale DB, ti faccio vedere magari su una mappa un po' più concettuale di nuovo. Quindi qua posso vedere dove la latenza, quanto ogni servizio eh ha impattato sulla sul tempo di esecuzione e ovviamente se devo andare a debuggare in questo caso vedo che l'errore su eh un API terza
+Alessandro Peyrachia: C.
+Enrico Portolan: di eh di payment,
+Alessandro Peyrachia: Ok.
+Enrico Portolan: quindi questo magari più per il team developer secondo me,
+ 
+ 
+00:26:16
+ 
+Alessandro Peyrachia: Sì,
+Enrico Portolan: quindi per loro fai finta che c'hai il cliente che ti dice "Guarda,
+Alessandro Peyrachia: sì.
+Enrico Portolan: non riesco a vedere quel grafico, tu me lo immagino super fatto". facile. Vai qua, sai che l'apfico è, non lo so, create graph,
+Alessandro Peyrachia: Sì, sì,
+Enrico Portolan: vedi quali hanno il 500 error e vai a vedere il tempo di esecuzione,
+Alessandro Peyrachia: cerco tutto.
+Enrico Portolan: cosa è esploso, cosa no. Eh, se vuoi hai anche i log relativi a ogni singola trace direttamente qua e diciamo l'idea è aiutarvi a semplificare il il debugging. Ehm e questo poi secondo me quando lo provate nel trial si vedrà
+Alessandro Peyrachia: Chiaro?
+Enrico Portolan: ancora meglio. A riapprofitto. Io sono stavo discondendo della da parte di di Jobs per farti vedere quel modulo dedicato. Quindi, eh, tra l'altro hanno lanciato proprio adesso,
+Alessandro Peyrachia: Sì.
+Enrico Portolan: 10 giorni fa proprio un modulo dedicato alla osservabilità dei dei dati, tra cui c'è anche la parte di di jobs monitoring e eh come funziona.
+Alessandro Peyrachia: Ok.
+Enrico Portolan: Quindi qui tu hai sempre, tra l'altro, con lo stesso agent, quindi non devi fare cose, diciamo, extra.
+ 
+ 
+00:27:23
+ 
+Enrico Portolan: Hai visibilità su i data jobs, come vedi, hai data bricks, spark, airflow, questo non so cosa sia, però quelli che usate voi,
+Alessandro Peyrachia: Eh, DBT. Sì,
+Enrico Portolan: ok? Eh,
+Alessandro Peyrachia: sì.
+Enrico Portolan: sono coperti e ehm posso vedere sia appunto eh i bat jobs, streaming e e i cluster. Quindi, qual è l'idea qui? e andare a vedere magari filtro per airflow, quindi io posso andare a vedere ogni per ogni singolo job ovviamente le metriche eh a
+Alessandro Peyrachia: Sì,
+Enrico Portolan: livello macro, no? Quindi quanti jobs run,
+Alessandro Peyrachia: sì,
+Enrico Portolan: la quanto ci ha messo l'ultima esecuzione,
+Alessandro Peyrachia: curato.
+Enrico Portolan: l'average, quindi magari io qua voglio vedere, ad esempio, qua vedo che un average è salita di tantissimo, no? Quindi già qua posso fare dei dei ragionamenti o posso filtrare per quelli che hanno dei
+Alessandro Peyrachia: Sì.
+Enrico Portolan: fail run.
+Alessandro Peyrachia: Ok.
+Enrico Portolan: Ehm, qua magari anche dimmi tu, perché ovviamente usandolo ogni giorno mh sai
+Alessandro Peyrachia: Eh sì, quello che quello che puoi provare ad aprire un job,
+Enrico Portolan: dirmi
+Alessandro Peyrachia: perché generalmente il job airflow è composto da una serie di step,
+ 
+ 
+00:28:25
+ 
+Enrico Portolan: Sì,
+Alessandro Peyrachia: quindi Ah, ecco,
+Enrico Portolan: esatto.
+Alessandro Peyrachia: se guardi nei task secondo me vediamo se ha quelle sono le jobrun e i
+Enrico Portolan: Sì, forse sul
+Alessandro Peyrachia: Ecco, perfetto. Sì, questi sono due task, quindi Ah, ok, interessante. Sì,
+Enrico Portolan: Esatto.
+Alessandro Peyrachia: si vede all'interno della dell'esecuzione come Ah,
+Enrico Portolan: tieni conto che vedi Esatto,
+Alessandro Peyrachia: ok, è bello.
+Enrico Portolan: vedi ogni singola task,
+Alessandro Peyrachia: Sì, Flameft dentro.
+Enrico Portolan: quindi cioè con gli errori,
+Alessandro Peyrachia: anche già ottimo. Sì,
+Enrico Portolan: cioè l'idea è proprio a ha due eh obiettivi principali,
+Alessandro Peyrachia: sì.
+Enrico Portolan: uno aiutare voi in questo caso a vedere perché è fallito e qual è il task che ci mette più tempo.
+Alessandro Peyrachia: C'è
+Enrico Portolan: E questo lo puoi fare con questo grafico e e anche ovviamente con tutte le metriche che tu hai qui e tieni conto ovviamente che poi è legato a dici "Ok, questa è è il pod quello che ho depato prima, quindi in quel caso lo riesco a vedere da lì". Ehm quindi appunto durata failure rate per ogni singola per ogni singola
+ 
+ 
+00:29:26
+ 
+Enrico Portolan: run. Ad esempio, potremo vedere una che c'ha un errore eh su questa. Esatto. Eh, diciamo la cosa comoda che anche qui lo vedi, no? La anche per l'adoption la i concetti sono uguali a quello della PM, quindi lo stesso grafico, lo stesso in questo caso è fallito. Eh, ti dice questo è l'errore che che ho visto su sull'airflow. L'altra e ovviamente anche qua per crearti del dei monitoraggi, no? Quindi se vedi Esatto.
+Alessandro Peyrachia: E sì,
+Enrico Portolan: Tipo qua ti
+Alessandro Peyrachia: se fallisce qualcosa o passa un certo tipo,
+Enrico Portolan: dice
+Alessandro Peyrachia: una certa durata di esecuzione, per esempio. Esatto. C'è c'è già lì pronto.
+Enrico Portolan: mh,
+Alessandro Peyrachia: Slongect. Perfetto.
+Enrico Portolan: esatto, ce l'hai già configurati. L'altro tema in cui stanno investendo è appunto andare ad
+Alessandro Peyrachia: Occhio.
+Enrico Portolan: ottimizzare il costo di questi job. Quindi eh se io vado sulla parte dei cluster, lui ti fa vedere. Adesso qua ho degli esempi solo su su databaks che in realtà magari potete già usare visto che vi costa.
+ 
+ 
+00:30:26
+ 
+Enrico Portolan: Ti fa vedere ad esempio in base a lui vede quanto dura il job si può
+Alessandro Peyrachia: Sì.
+Enrico Portolan: ottimizzare. Ad esempio qua ti suggerisce di fare un downsiz e ti manda anche già la redirect
+Alessandro Peyrachia: Ah, di cambiare l'istanza. Ok. Sì.
+Enrico Portolan: su data bricks poi per per farlo. Ok? Quindi è comodo perché hai tutto eh dentro la stessa piattaforma e riesci anche a a vedere a controllare eh diciamo i costi sui sui job e
+Alessandro Peyrachia: Questo questo è interessante. Sì,
+Enrico Portolan: poi qui m eh
+Alessandro Peyrachia: sì, sì,
+Enrico Portolan: questo poi
+Alessandro Peyrachia: questo.
+Davide Di Donato: Se ti posso chiedere Alessandro come come fate a controllare adesso a livello di costi per quanto riguarda so che
+Enrico Portolan: M.
+Davide Di Donato: Databx comunque vi costava parecchio e state migrando anche per quello, ma come controllavate fino
+Alessandro Peyrachia: Abbiamo scritto il codice Python che fa la riconciliazione tra il come si chiama
+Davide Di Donato: adesso?
+Alessandro Peyrachia: il buildingure e i job che eseguiamo. Quindi roba custom abbastanza abbastanza
+Davide Di Donato: Ok,
+Alessandro Peyrachia: interessante, eh.
+Davide Di Donato: ha funzionato però.
+Alessandro Peyrachia: Sì, sì, funziona, funziona.
+ 
+ 
+00:31:29
+ 
+Alessandro Peyrachia: È chiaro che cioè è una roba totalmente customizzata, quindi se devi aggiungere qualcosa manutenzione,
+Davide Di Donato: manutenzione.
+Alessandro Peyrachia: quindi lì bisogna vedere. è sempre il solito concetto,
+Davide Di Donato: Ok.
+Alessandro Peyrachia: lo compro fatto perché ci posso stare, non ci posso stare dietro oppure ho il tempo per starci dietro e e boh, e lo faccio. E è chiaro che da un prodotto già prefatto, cioè una mi aspetto che faccia le stesse cose e altre nell'altro senso se me lo devo fare da da solo posso ci metto il tempo che ci metto.
+Davide Di Donato: Certo.
+Alessandro Peyrachia: potrebbe essere anche che ci metto un tempo che non è sensato per il lavoro che fa,
+Enrico Portolan: M.
+Alessandro Peyrachia: perché comunque alla fine più o meno anche solo spannometricamente, come dicevamo un po' di tempo fa, eh sappiamo cosa dove spendiamo. È chiaro che andare a vedere effettivamente cosa stiamo spendendo ha molto più senso, è molto più importante e molto più anche interessante capirlo, anche perché abbiamo, per esempio,
+Davide Di Donato: M.
+Alessandro Peyrachia: adesso non non avevamo niente per farlo,
+Enrico Portolan: M.
+Alessandro Peyrachia: adesso è l'abbia fatto nelle ultime due settimane questo job di riconciliazione e abbiamo già visto un paio di cose interessanti.
+ 
+ 
+00:32:36
+ 
+Davide Di Donato: Ok.
+Enrico Portolan: Sì.
+Alessandro Peyrachia: È molto complicato farlo, però bisogna scaricarsi il report,
+Davide Di Donato: Sì,
+Alessandro Peyrachia: lavorarlo in anticipo,
+Davide Di Donato: certo.
+Alessandro Peyrachia: pre, cioè c'è del lavoro da fare.
+Davide Di Donato: anche in ottica di stabil di scalabilità, scusami, non era non
+Alessandro Peyrachia: Sì. No, no, se devi aggiungere una categoria, devi andare nel codice, aggiungere una categoria, devi aggiungere un qualcosina di un certo tipo di aggregazione,
+Davide Di Donato: è.
+Enrico Portolan: M.
+Alessandro Peyrachia: ti devi scrivere del codice Python e testarlo, provarlo, quindi insomma no, eh, se hai solo quello da fare nella vita, magari va bene, ma magari no. Quindi bisogna vedere anche chi lo fa il quel lavoro lì, perché in questo momento quel lavoro lì costa veramente tanto, perché lo sta facendo una persona che costa veramente tanto a livello non solo di di di soldi, ma di di tempo.
+Davide Di Donato: di tempo.
+Alessandro Peyrachia: Il suo tempo è prezioso e non dovrebbe fare queste cose qui,
+Davide Di Donato: Esatto.
+Alessandro Peyrachia: quindi ci sta. Va bene, va bene. Questo, questo è molto interessante e perché obiettivamente è difficile farlo. Quindi questo lavoro qui,
+ 
+ 
+00:33:34
+ 
+Enrico Portolan: อ
+Alessandro Peyrachia: trovarlo preconfigurato è effettivamente supporto sia airflow che
+Davide Di Donato: Eh, non ne avevamo parlato nel nel meeting scorso semplicemente perché non c'era,
+Alessandro Peyrachia: datab
+Davide Di Donato: almeno non era era in preview e non era in in general availability, quindi questo ti fa capire anche,
+Alessandro Peyrachia: mene
+Davide Di Donato: diciamo, il tasso, insomma, di miglioramento della piattaforma.
+Alessandro Peyrachia: bene. Questo sì, questo è interessante, devo essere sincero.
+Davide Di Donato: Scusami se ti ho interrotto.
+Alessandro Peyrachia: Vai,
+Enrico Portolan: No, no, no,
+Alessandro Peyrachia: vai.
+Enrico Portolan: tanto e è per voi. No, comunque esatto, soprattutto questa parte di eh delability stanno stanno investendo un sacco, stanno cambiando un sacco un sacco di cose. Ehm Ok. Eh, quindi abbiamo visto Vai,
+Alessandro Peyrachia: Posso chiedere solo mentre siamo qua la parte di cosa si può fare con la parte di AI
+Enrico Portolan: vai.
+Alessandro Peyrachia: observability,
+Enrico Portolan: Sì,
+Alessandro Peyrachia: perché noi un po' dopo eh finisci pure quel giro perché ovviamente noi alla fine
+Enrico Portolan: sì.
+Alessandro Peyrachia: facciamo intelligenza artificiale, non Geni, quindi siamo su uno scope completamente differente anche come dimensione, però Dopo, magari se abbiamo 5 minuti magari mi
+ 
+ 
+00:34:48
+ 
+Enrico Portolan: Sì, tanto Allora,
+Alessandro Peyrachia: interesserebbe.
+Enrico Portolan: diciamo che la parte di Cubernetis l'abbiamo vista, la parte di data Jobs l'abbiamo vista,
+Alessandro Peyrachia: Sì,
+Enrico Portolan: la PM logs velocemente,
+Alessandro Peyrachia: sì,
+Enrico Portolan: però mi sembra di capire che comunque eh ci siamo. Dimmi tu se se è
+Alessandro Peyrachia: sì, sì, sì, sì, sì. Adesso ti dico,
+Enrico Portolan: corretto.
+Alessandro Peyrachia: ehm, è già chilometri avanti a quello che ci serve, quindi va benissimo
+Enrico Portolan: Ok, magari se siete d'accordo potremmo fare una decina di minuti sulla parte di front-end anche per vedere cosa cosa
+Alessandro Peyrachia: così.
+Enrico Portolan: offre, come può aiutarvi eh soprattutto quegli scenari di qualcosa non funziona,
+Alessandro Peyrachia: Sì,
+Enrico Portolan: voglio vedere se i grafici funzionano, eccetera eccetera. E poi ci lasciamo, sì l'ultimo 10 minuti così sia per domande sia per vedere altri moduli che potrebbero essere,
+Alessandro Peyrachia: sì. Ok,
+Enrico Portolan: diciamo, interessanti.
+Alessandro Peyrachia: va
+Enrico Portolan: Ehm Ok. E poi,
+Alessandro Peyrachia: bene.
+ 
+ 
+00:35:40
+ 
+Enrico Portolan: tra l'altro sulle R mod faccio vedere anche tu una parte poi di di monitoraggi. Allora, eh la parte di real monitoring,
+Alessandro Peyrachia: Ok.
+Enrico Portolan: quindi frontend, fa parte del modulo di digital experience che sostanzialmente comprende tutta una parte di
+Alessandro Peyrachia: Sì.
+Enrico Portolan: testing sintetico, quindi test di API, browser test proprio e immaginio un bot che va e e fa cose
+Alessandro Peyrachia: Sì, cosa te? No, ci ho lavorato anche su questo con il vecchio
+Enrico Portolan: dentro. Ok.
+Alessandro Peyrachia: Cypress.
+Enrico Portolan: Esatto, esatto. Identico, però è è un tool no code fatto da Datogg. Ehm,
+Alessandro Peyrachia: Ok,
+Enrico Portolan: e poi c'è la parte di real monitoring che sia copra la parte web che anche mobile. Se voglio vedere la parte web cos'è che ho?
+Alessandro Peyrachia: ok.
+Enrico Portolan: prima pagina di dashboard, tutta una parte di metriche eh i vitals per diciamo vedere se ci sono delle ottimizzazioni da fare sul loading time. Tieni conto che per ognuno di essi poi io posso andare a vedere qual è la risorsa che ci mette più tempo perché magari c'ho un'immagine di 3 mega all'inizio che ci mette un sacco a caricare.
+ 
+ 
+00:36:47
+ 
+Alessandro Peyrachia: Sì,
+Enrico Portolan: Tutta questa parte di analisi lo posso fare esatto.
+Alessandro Peyrachia: questa cosa qua è vita vissuta l'immagine da 3 mega cè
+Enrico Portolan: No, no, esatto, perché anch'io ero ero davvero per quindi per quello te lo dico.
+Alessandro Peyrachia: Mamma
+Enrico Portolan: Ok, quindi poi qua vedi per ognuno di essi tu puoi andare,
+Alessandro Peyrachia: mia!
+Enrico Portolan: clicchi ti fa vedere eh cosa è successo, anzi cosa cosa ha visto e come possiamo andare a ridurre il tempo di di
+Alessandro Peyrachia: Ok,
+Enrico Portolan: caricamento o di o di rendering, magari, eh. L'altra cosa è ror frontend,
+Alessandro Peyrachia: interessante.
+Enrico Portolan: no? Quindi, eh,
+Alessandro Peyrachia: E
+Enrico Portolan: mi diceva Davide che adesso è coperto forse da Centry, se non sbaglio,
+Alessandro Peyrachia: sì, abbiamo Sì,
+Enrico Portolan: però
+Alessandro Peyrachia: nel nel giro c'è anche Sentry e Centry fa un po', diciamo, il jolly, no? quando ogni tanto tira su delle cose che non vede nessun altro e
+Enrico Portolan: Esatto,
+Alessandro Peyrachia: giustamente e quindi siamo
+Enrico Portolan: esatto. Qui l'idea Esatto.
+Alessandro Peyrachia: ancora
+Enrico Portolan: L'idea è avere quegli stessi errori che che vedete adesso in un tool, però avere tutto unito, quindi il team usa tutto sempre lo stesso tool.
+ 
+ 
+00:37:48
+ 
+Alessandro Peyrachia: sei tu.
+Enrico Portolan: qui ha i tuoi errori, la tua frontend. Qual è il vantaggio? Che ovviamente non solo vedi l'errore stesso, ti dice come puoi fixarlo, ma se vuoi puoi andare a vedere anche ovviamente quale impatto ho avuto su quale sessione e quale magari API, quindi quale backend è andato a a colpire, no? Quindi io posso andare a targetizzare la singola sessione se voglio e e anche poi i log
+Alessandro Peyrachia: Sì.
+Enrico Portolan: relativi a quella sessione.
+Alessandro Peyrachia: Ok.
+Enrico Portolan: Ehm qui di nuovo sono tutti, diciamo, tra parti di ottimizzazione, il tracking delle dalle varie versioni del sito web, ma magari andrei a vedere la parte di Explorer delle sessioni, quindi capire veramente cosa sta facendo l'utente nella vostra piattaforma. Adesso qui lo filtro per sessioni fatte da utenti veri,
+Alessandro Peyrachia: Sì,
+Enrico Portolan: perché c'è l'altra sezione che sono sessioni fatte da quel eh browser test che ti spiegavo prima.
+Alessandro Peyrachia: sì, sì,
+Enrico Portolan: E io da qui posso andare a vedere, ad esempio,
+Alessandro Peyrachia: sì.
+Enrico Portolan: eh, vediamo tipo questo qui. Mh, ovviamente posso andare a vedere qualsiasi sessione che l'utente ha fatto,
+ 
+ 
+00:39:00
+ 
+Alessandro Peyrachia: Sì.
+Enrico Portolan: qualsiasi vista in cui ha cliccato, se ho dei segnali di frustrazione che possono essere i classici link rotti o il bottone che ci mette 3 secondi a caricare,
+Alessandro Peyrachia: Ja.
+Enrico Portolan: errori. Quindi per ognuno di essi io posso cliccare dentro, vedere quello che è successo, vedere se ci sono errori, ma se voglio, se ad un click è legata un API call, posso andare a vedere anche quello. Quindi quello che posso fare è dire, vedi, lui fa una fetch di un API di recommendation o di prodotti. Questo è un API che mi eh restituisce un Jason di prodotti.
+Alessandro Peyrachia: Sì.
+Enrico Portolan: Io qua clicco e cosho? Ho la vista della PM, quindi fai finta che questo sia il grafico che dicevi prima.
+Alessandro Peyrachia: Ok. Sì, sì.
+Enrico Portolan: Qua tu vedi che l'utente Pink Pallino ha cliccato e ha visto che il Jason del grafico è sbagliato e da qui io so uno che è il backend dove è fallito il log del backend, ma di nuovo anche chi è l'utente perché ho la sessione, ho gli attributi, se voglio posso mettere l'email dell'utente quando si logga e anche da dove da dove arrivo. Ok.
+ 
+ 
+00:40:15
+ 
+Alessandro Peyrachia: Questo sì, questo gira tutto inserendo l'est immagino
+Enrico Portolan: Sì, esatto.
+Alessandro Peyrachia: sì, solo tirando dentro l' stk di datalog nell'applicazione,
+Enrico Portolan: Sì,
+Alessandro Peyrachia: poi fa tutto lui.
+Enrico Portolan: esatto.
+Alessandro Peyrachia: Ok,
+Enrico Portolan: Stkato frontend e fa tutto lui.
+Davide Di Donato: M.
+Alessandro Peyrachia: questo ok.
+Enrico Portolan: Tra l'altro poi puoi aggiungere la parte di session replay, quindi va a registrare quello che l'utente ha fatto, quindi clicca da una parte, eh clicca da un'altra, fa cose e per ogni step posso andare a vedere le variazioni che che ha
+Alessandro Peyrachia: Ah, questo è
+Enrico Portolan: fatto. Ok?
+Alessandro Peyrachia: interessante.
+Enrico Portolan: Quindi ehm questo potrebbe essere utile per quello appunto che ci descrivevi prima.
+Alessandro Peyrachia: Sì,
+Davide Di Donato: per le Time
+Alessandro Peyrachia: and a vedere Esatto.
+Davide Di Donato: Series.
+Alessandro Peyrachia: andare a vedere l'utente cosa clicca, come usa il portale, anche solo eh proprio a livello di interazione utente che tipo adesso noi abbiamo una user experience che non è bellissima, quindi anche solo avere,
+Davide Di Donato: Avete
+Alessandro Peyrachia: cioè sì, è utilizzabile, ma non è proprio il portale più bello del mondo.
+ 
+ 
+00:41:13
+ 
+Alessandro Peyrachia: E quindi Sì,
+Davide Di Donato: delle figure di di UX designer o nel futuro che che si regerete
+Alessandro Peyrachia: sì, sì, sì, sì, sì, sì.
+Davide Di Donato: o
+Alessandro Peyrachia: Solo che prima bisogna mettere eh, come si dice, le funzionalità, eh, poi poi è spostare i pannelli in giro per l'interfaccia.
+Davide Di Donato: ti volevo chiedere Sì,
+Alessandro Peyrachia: Eh, c'è c'è tempo. Tanto ti dico,
+Davide Di Donato: volevo chiedere al volo.
+Alessandro Peyrachia: il nostro utente è un utente non è un utente, cioè il nostro non è un portale pubblico dove l'impatto è importante.
+Enrico Portolan: M.
+Alessandro Peyrachia: Il nostro è per un utente specifico di business di una certa azienda,
+Davide Di Donato: Certo, certo.
+Alessandro Peyrachia: quindi cioè alla fine della fiera è abituato magari a utilizzare prodotti ancora più vecchi o nessun prodotto, quindi la parte di proprio di bellezza del portale passa un po' indietro rispetto ai i
+Davide Di Donato: Certo,
+Alessandro Peyrachia: dati crudi che gli devono arrivare che sono la quello che poi fa la differenza per
+Davide Di Donato: certo,
+Alessandro Peyrachia: noi.
+Davide Di Donato: però la dinamicità e la velocità immagino quelle siano abbastanza
+Alessandro Peyrachia: Beh, certo, la user experience è sempre importante,
+ 
+ 
+00:42:04
+ 
+Davide Di Donato: eh ti volevo chiedere al volo, scusami,
+Alessandro Peyrachia: e abbiamo quella free,
+Davide Di Donato: Centry c'avete la versione open source, quella
+Alessandro Peyrachia: abbiamo l'account free, quindi lost, il managed,
+Davide Di Donato: Ok,
+Alessandro Peyrachia: cioè il managed, il software as a service praticamente e la il tire free.
+Davide Di Donato: ok,
+Alessandro Peyrachia: Per adesso ci stiamo dentro.
+Davide Di Donato: ok.
+Alessandro Peyrachia: Mh, però siamo già siamo già al limite,
+Davide Di Donato: Ok.
+Alessandro Peyrachia: quindi potremmo capire un attimo anche lì cosa fare.
+Enrico Portolan: Chiaro. Ok.
+Alessandro Peyrachia: Ottimo. Ma questa cosa della il replay delle delle sessioni è interessante,
+Enrico Portolan: Ottimo.
+Alessandro Peyrachia: per me, cioè è per me interessante, credo sia anche più interessante per chi sviluppa il portale almeno si hai un feedback
+Enrico Portolan: Sì,
+Alessandro Peyrachia: effettivo del di come viene utilizzato.
+Enrico Portolan: esatto.
+Alessandro Peyrachia: Ah.
+Enrico Portolan: Poi tieni conto che poi la cosa comoda eh che nel vostre US case tu puoi andare proprio a vedere ogni singolo utente cosa ha fatto, ogni singola power plant cosa ha fatto, quindi anche se vuoi estrarre dei dati, magari dei KPI a livello business, tipo, non lo so, c'ho il tipo di non so Milano che lo usa un sacco e l'altro invece di Roma che non lo usa, anche quello è comodo per decidere come sviluppare o insomma puoi estrarre tanti
+ 
+ 
+00:43:13
+ 
+Alessandro Peyrachia: Sì, sì,
+Enrico Portolan: tante attività, tanti che possono essere comodi anche per lo sviluppo futuro del dell'applicativo.
+Alessandro Peyrachia: sì, sì, sì, sì. Eh, adesso abbiamo scarsa visibilità su questa cosa qui,
+Enrico Portolan: Eh
+Alessandro Peyrachia: quindi sapere anche solo banalmente che cliente usa l'ep che cliente usa il portale, già è già un passo avanti.
+Enrico Portolan: mh, esatto. Ok. Ehm, ora faccio vedere un secondo la parte di monitoraggio e poi lascio gli ultimi 10 minuti per domande e per Davide se vuole aggiungere qualcosa. Ehm, allora, monitoraggio, tieni conto che tutto quello che abbiamo visto li abbiamo già toccati un po' di volte la parte di di monitoraggio, eh probabilmente l'hai già visto anche perché è usato dato in precedenza.
+Alessandro Peyrachia: Sì.
+Enrico Portolan: Comunque puoi creare vari tipi di monitoring, quindi sia su soglie statiche, sia su anomalie. eh sia sullm,
+Alessandro Peyrachia: Sì.
+Enrico Portolan: quindi definire se non lo so la latenza di una certa API va oltre una soglia o va oltre ai valori classici, avvertimi. Ok,
+Alessandro Peyrachia: Ok.
+Enrico Portolan: quindi posso fare tutti questi tipi di ragionamento.
+ 
+ 
+00:44:22
+ 
+Alessandro Peyrachia: Sì.
+Enrico Portolan: Abbiamo visto anche monitoraggio lato data jobs, quindi anche quello può essere creato. E abbiamo anche un tool poi di monitoraggio fatto apposta con, diciamo, proattivo, quindi con con l'AI che in base a metriche infrastruttura,
+Alessandro Peyrachia: Sì,
+Enrico Portolan: il traffico della PM, i logs ti dà una un'idea di cosa sta succedendo
+Alessandro Peyrachia: sì.
+Enrico Portolan: se vede delle anomalie.
+Alessandro Peyrachia: Ah, ok. Sì,
+Enrico Portolan: si chiama si chiama Watchdog,
+Alessandro Peyrachia: sì, sì.
+Enrico Portolan: quindi l'idea appunto andare a vedere ci sono magari degli spike su degli su logs, spike su latenza. Eh, qui ad esempio è andato a vedere se eh una nuova versione dell'applicativo sta causando degli errori mai visti prima, quindi lui ti fa vedere dove sta succedendo, quali user ha impattato e anche quali sono potrebbero essere il next step per fixare. Quindi da qui uno velocemente può dire "Ok, ricevo la notifica, vado a vedere qual è la trace che sta facendo esplodere tutto e in pochi minuti eh ti aiuta poi a risolvere quello che è successo. Ehm, quindi appunto monitraggio, come ti fatto vedere, hai sia dei template sia una parte proattiva fatta direttamente da da datadog incluso nella nella piattaforma.
+ 
+ 
+00:45:45
+ 
+Alessandro Peyrachia: Ottimo. Questo interessante anche questo. Sì, questo potrebbe potenzialmente rilevare anche eventualmente so tipo qualcuno che
+Enrico Portolan: Ok,
+Alessandro Peyrachia: prova a fare un didosso, cose del genere, che tanto è abbastanza veloce come da capire. Va bene. Ottimo.
+Enrico Portolan: vai. Lascio poi.
+Alessandro Peyrachia: Allora, vai, vai. Se Vai Davide, poi mi tengo io un paio di domande per la fine.
+Davide Di Donato: No, niente. Io io insomma abbiamo già abbiamo un quarto d'ora
+Alessandro Peyrachia: Ja.
+Davide Di Donato: disponibile. Ovviamente se hai domande adesso è il momento giusto perché abbiamo Enrico che è un maestro sul tool, quindi ti saprà rispondere bene. Poi nel futuro ovviamente lo eh dovessimo andare in trial, dovessimo iniziare una trial, ovviamente lui sarà incluso e quindi ci aiuterà nel percorso delle due settimane per testare su
+Alessandro Peyrachia: Ok,
+Davide Di Donato: un ambiente vostro di staging il tool. Eh quindi insomma non è una cosa self service completa,
+Alessandro Peyrachia: certo.
+Davide Di Donato: ma c'è un aiuto costante, insomma. Eh, però se ci sono domande adesso a livello di funzionalità, eh, facci sapere e noi siamo qui disponibili.
+ 
+ 
+00:46:56
+ 
+Alessandro Peyrachia: Ah, sì. Allora, volevo vedere un attimo di nuovo la parte di data observability perché ovviamente, come puoi immaginare quello quello che ci interessa. Qui dentro c'è anche qualcosa sulla parte di appunto dicevi di data quality,
+Davide Di Donato: Mhm.
+Alessandro Peyrachia: tipo monitoraggio dei catalog, quelle cose lì di catalog per esempio,
+Enrico Portolan: Eh, monitoraggio di ad esempio.
+Alessandro Peyrachia: non so, i catalog iceberg, quelle cose lì dove stiamo dobbiamo rivedere un
+Enrico Portolan: Allora, me lo segno perché non lo so.
+Alessandro Peyrachia: po' solo per capire se se
+Enrico Portolan: Aspetta.
+Alessandro Peyrachia: c'è già pronto qualcosa o c'è qualcosa in come dire in e allora vabbè,
+Enrico Portolan: Usate qualche tool particolare
+Alessandro Peyrachia: adesso usiamo il catalog di di databaks, quindi eh per esempio ah,
+Enrico Portolan: per
+Alessandro Peyrachia: vedi che c'è qualcosa dataset. Eh poi usiamo il catalog di databriaks, quindi che si chiama Unity Catalog, usiamo il ML Flow per i con i Sì, container, i modelli di machine learning. e utilizziamo, principalmente usiamo quello. Attendere, dopo useremo iceberg, ovviamente vedo già che c'è qualcosa lì di iceberg, eh. E quindi bisognerà capire un attimo.
+ 
+ 
+00:48:14
+ 
+Alessandro Peyrachia: Ti spiace solo splegare tutto tranne iceberg e vediamo cosa c'è. Cosa ci fa vedere? Ah, quello. Vai, cliccaci sopra. Sto per vedere se Ma volevo solo Ah,
+Enrico Portolan: Eh, mi sa che non c'è tanta roba
+Alessandro Peyrachia: bene,
+Enrico Portolan: ancora.
+Alessandro Peyrachia: c'è anche il line agge uh interessante.
+Enrico Portolan: Ok.
+Alessandro Peyrachia: E questo è interessante. Sì. Uh, arriva anche da si vede anche che arriva da Airflow. Ahi ahi ahi. Questo Questa è una killer feature questa, ragazzi.
+Enrico Portolan: Dimmi tu cos'è, perché per me
+Alessandro Peyrachia: Eh, praticamente il catalog sarebbe la strut il la struttura di metadati che c'è
+Enrico Portolan: sinceramente
+Alessandro Peyrachia: sopra il datalake, quindi nel datalake c'è una sbidonata di dati non strutturati, no?
+Enrico Portolan: mh
+Alessandro Peyrachia: Eh, sopra di questa cosa qui vai a costruire un catalog che prende i dati non strutturati e li struttura in tabelle eh ordin con le colonne ben
+Enrico Portolan: M.
+Alessandro Peyrachia: ordinate, fa magari delle aggregazioni, crea già dei dati, delle tabelle, non so, generate, c scusami, delle colonne generate, fa tutta una serie di sostanzialmente ti genera un database relazionale sopra
+ 
+ 
+00:49:20
+ 
+Enrico Portolan: Ah,
+Alessandro Peyrachia: un una struttura non un un datalake non strutturato.
+Enrico Portolan: ok.
+Alessandro Peyrachia: E e questa cosa qui è importante perché essendo un database, no, relazionale, relazionale, boh, proprio relazionale così, eh basato su un datalake, nel tempo cambia sicuramente la struttura e quindi tu quando vai a leggere i dati sopra devi sapere il linee, devi avere il cosiddetto line a dei delle colonne perché da oggi a domani può cambiare una colonna
+Davide Di Donato: Mhm.
+Alessandro Peyrachia: completamente, cambia come viene generata, ma tu magari il dataset l'hai utilizzato ieri a partire da quella colonna.
+Davide Di Donato: Certo.
+Enrico Portolan: Ok.
+Alessandro Peyrachia: e devi sapere che tutto quello che ha girato su quei dati lì viene tracciato dal dal catalog. E quindi sì, eh questo è questo è interessante perché eh non c'è tantissimo in giro che fa questo lavoro qui e quindi ci sono. Possiamo vedere i dat i monitor. Possiamo vedere solo dentro monitor cosa c'è.
+Enrico Portolan: Eh, questo credo sia un monitor generale su tutto quello.
+Alessandro Peyrachia: Ah, ok, perfetto, perfetto. Sì, sì, sì.
+Enrico Portolan: Ah,
+Alessandro Peyrachia: Beh,
+Enrico Portolan: ecco
+Alessandro Peyrachia: comunque monitorare delle Sì,
+ 
+ 
+00:50:22
+ 
+Enrico Portolan: qua.
+Alessandro Peyrachia: sì, delle metriche sul dataset sul scusami, sul catalog. Perfetto. Mi guardi solo un attimo in in dataset cosa ci fa vedere?
+Enrico Portolan: Sì,
+Alessandro Peyrachia: Era quello di prima se bisog Sì.
+Enrico Portolan: sì,
+Alessandro Peyrachia: Ok, perfetto.
+Enrico Portolan: sì.
+Alessandro Peyrachia: Quindi qui vai a vedere cosa succede. Ottimo. E in job?
+Enrico Portolan: in job è quello che è quello che fatto vedere prima,
+Alessandro Peyrachia: Job ci fa vedere quello di prima.
+Enrico Portolan: quindi Sì,
+Alessandro Peyrachia: Ok, perfetto.
+Enrico Portolan: sì,
+Alessandro Peyrachia: Però è tutto integrato,
+Enrico Portolan: sì, sì,
+Alessandro Peyrachia: quindi questa cosa qui è interessante e se vai anche su Line
+Enrico Portolan: sì,
+Alessandro Peyrachia: Aage,
+Enrico Portolan: sì, mi sa che quella Ah,
+Alessandro Peyrachia: sì, ok,
+Enrico Portolan: vedi, puoi
+Alessandro Peyrachia: ti devi prendere un asset, tipo una table. Sì,
+Enrico Portolan: fare.
+Alessandro Peyrachia: però prendere una table. Ah, perfetto. Quindi vi fa vedere questa questa cosa qui
+Enrico Portolan: Ah, figo.
+ 
+ 
+00:51:03
+ 
+Enrico Portolan: Ok, run. Ok.
+Alessandro Peyrachia: è interessante. Questo questa cosa qui è molto interessante.
+Enrico Portolan: Sì, so che su data colti avevano proprio comprato a settembre un'azienda che lo faceva, quindi penso che questa l'integrazione con quell'azienda.
+Alessandro Peyrachia: Eh, questo questo è interessante. Sì,
+Enrico Portolan: Ah,
+Alessandro Peyrachia: perché Sì,
+Enrico Portolan: questo è quello che dicevi prima tu.
+Alessandro Peyrachia: esatto.
+Enrico Portolan: Ta ta ta.
+Alessandro Peyrachia: Lì ti va a vedere com'è strutturata la la tabella e vai a
+Davide Di Donato: Mhm.
+Alessandro Peyrachia: vedere insomma dove sta. Quindi tipo su che bucket è com'è fatta quello che quello che c'è. Occhio, ottimo.
+Davide Di Donato: Bene,
+Alessandro Peyrachia: Questo questo è molto interessante eh questo
+Davide Di Donato: abbiamo scoperto una cosa nuova insieme.
+Alessandro Peyrachia: questo secondo me vi apre un mercato che neanche immaginate perché sta roba qui è infattibile e cioè è un lavoro veramente tutti hanno una infrastruttura personalizzata,
+Davide Di Donato: Ok.
+Alessandro Peyrachia: customizzata, basata su tonnellate e tonnellate di script che vanno a riempire altri database che poi vengono visualizzati da altri prodotti tipo suet cose del genere,
+ 
+ 
+00:52:09
+ 
+Davide Di Donato: Mh
+Alessandro Peyrachia: però Sì,
+Davide Di Donato: mh.
+Alessandro Peyrachia: questo ha un bel pezzo, una bella integrazione questa. Molto molto interessante.
+Davide Di Donato: Vabbè, insomma, abbiamo capito, diciamo, la ciccia c'è,
+Alessandro Peyrachia: Sì, in questo caso c'è. Ti posso solo chiedere una parte di osservability dell'AI cosa cosa riusciamo a vedere perché anche lì
+Davide Di Donato: eh.
+Enrico Portolan: Sì,
+Alessandro Peyrachia: mi interessa anche quello.
+Enrico Portolan: sì. La parte di hai di base è sullm.
+Alessandro Peyrachia: Perché solo l Ok.
+Enrico Portolan: Eh,
+Alessandro Peyrachia: Eh,
+Davide Di Donato: Cosa cosa fate voi all'interno?
+Alessandro Peyrachia: no, non Ah, però però aspetta,
+Enrico Portolan: esatto.
+Alessandro Peyrachia: mi guardi solo dentro la parte di experiment cosa
+Enrico Portolan: Sì,
+Alessandro Peyrachia: c'è?
+Enrico Portolan: l'experiment puoi andare a usare input e output di questa usarlo proprio come una specie di playground. Fai finta.
+Alessandro Peyrachia: Sì. Ah, ok. Li vai a fare gli experiment.
+Enrico Portolan: Eh,
+Alessandro Peyrachia: Ok. No, pensavo pensavo tracciasse pensavo
+Enrico Portolan: esatto.
+ 
+ 
+00:52:58
+ 
+Alessandro Peyrachia: tracciasse per esempio, non so, le sessioni di ML Flow e quelle cose lì. Ok.
+Enrico Portolan: Eh, no, non credo. Cioè,
+Alessandro Peyrachia: No,
+Enrico Portolan: qua tu ti crei dal inza dal dell'interazione degli Llm,
+Alessandro Peyrachia: no,
+Enrico Portolan: tu aggiungi dei dataset e dai dataset crei vari experiment.
+Alessandro Peyrachia: ok. Sì, è fatta solo per la Geni. Ok, scusami un attimo,
+Enrico Portolan: Sì,
+Alessandro Peyrachia: solo che mi mi sta uccidendo sta luce.
+Enrico Portolan: vai, vai.
+Alessandro Peyrachia: Ok, eccomi qua. Ah,
+Davide Di Donato: Sì, no, e questo è,
+Alessandro Peyrachia: finalmente.
+Davide Di Donato: diciamo, è più una funzionalità per Lelm interni all'azienda e noi loamo magari in un paio di
+Alessandro Peyrachia: Sì, sì, sì.
+Davide Di Donato: progetti che stiamo facendo adesso per appunto Lelm utilizzato all'interno dell'azienda per fare per avere una sorta di sandbox di playground per testare funzionalità AI,
+Enrico Portolan: M.
+Davide Di Donato: fare valutazioni E vediamo anche questo. Comunque c'è un bel boom, eh, magari non una cosa interessa direttamente a voi,
+ 
+ 
+00:53:57
+ 
+Alessandro Peyrachia: Mh.
+Davide Di Donato: ma specialmente aziende molto molto customer facing hanno tanto,
+Alessandro Peyrachia: Sì. Ehi,
+Davide Di Donato: cioè anche nel nel classico chatbot che ormai stanno un po' integrando tutti in tutte le aziende
+Alessandro Peyrachia: sì, sì, ho presente c'ho c'ho lavorato gli ultimi l'ultimo anno su queste cose qui, quindi più o meno so cosa cosa farci. Ah, noi al momento non non abbiamo quel tipo di interazione. Eh,
+Davide Di Donato: อ
+Alessandro Peyrachia: mi sarebbe interessato invece qualcosa sulla parte di tracing dei eh appunto dei del
+Enrico Portolan: M.
+Alessandro Peyrachia: training, cose del genere, però vabbè, possiamo cerchiamo di farlo in qualche altra maniera.
+Davide Di Donato: ce lo segniamo, magari magari cerchiamo perché
+Alessandro Peyrachia: Sì,
+Enrico Portolan: Ok.
+Alessandro Peyrachia: se c'è qualcosa su che traccia gli esperimenti di traccia MLOW sostanzialmente ML
+Davide Di Donato: Come?
+Alessandro Peyrachia: Flow e che è uno dei dei principali eh server di tracking dei della parte DML, però vabbè eh sono anche quelle sono metriche abbastanza semplici, quindi magari secondo me le troviamo già dentro il resto dell'infrastruttura, perché comunque Melflo alla fine fa girare script Python che fanno il training e mandano tramite STK o tramite
+Enrico Portolan: M.
+ 
+ 
+00:55:02
+ 
+Alessandro Peyrachia: qualcos'altro delle metriche che è il server di nel che sono metriche non tanto
+Davide Di Donato: Ok,
+Alessandro Peyrachia: dell'esecuzione, ma della stessa sì anche dell'esecuzione del training, ma soprattutto della qualità del risultato che arriva dalla dal dal modello.
+Davide Di Donato: ok. Sì, sì.
+Alessandro Peyrachia: Però secondo me sono metriche normalissime, quindi magari è già dentro eh il resto della piattaforma. Ok,
+Davide Di Donato: Allora, io vedo abbiamo magari 5 minuti,
+Alessandro Peyrachia: ottimo.
+Davide Di Donato: abbiamo capito che ovviamente, insomma, le cose per aiutarvi ci sono sicuramente.
+Alessandro Peyrachia: Sì, sì,
+Davide Di Donato: Eh,
+Alessandro Peyrachia: questa parte di data observability mi cambia abbastanza i piani, nel senso che adesso,
+Davide Di Donato: ok.
+Alessandro Peyrachia: devo ve lo dico sincero, ci stavamo stavamo pensando di usare tutt'altro, eh, perché boh, semplice da utilizzare, l'abbiamo installato facilmente, funziona. il minimo indispensabile lo fa per la parte di infrastruttura,
+Davide Di Donato: Mhm.
+Alessandro Peyrachia: però non abbiamo tutta la parte di integrazione con i job e quant'altro assolutamente custom, quindi avremmo dovuto svilupparcela e questa cosa qui ci mi sposta personalmente parecchio la questione,
+Davide Di Donato: Ok,
+Alessandro Peyrachia: quindi dobbiamo dobbiamo farci una pensata, anche perché, come dicevo prima, costo beneficio, cioè e bisogna capire quanto vogliamo perderci e quanto vogliamo spendere di nostro per
+ 
+ 
+00:56:15
+ 
+Davide Di Donato: certo, assolutamente. M.
+Alessandro Peyrachia: farlo.
+Enrico Portolan: Soprattutto essendo un team piccolo,
+Alessandro Peyrachia: Eh,
+Enrico Portolan: cioè alla fine se metà del tempo lo fai a sviluppare altri
+Alessandro Peyrachia: esatto, io non posso,
+Enrico Portolan: tool
+Alessandro Peyrachia: sono uno, quindi eh anche i colleghi non siamo tantissimi,
+Davide Di Donato: Ok.
+Alessandro Peyrachia: quindi insomma avere questo tipo di di valore senza spendere del nostro
+Enrico Portolan: Molta
+Alessandro Peyrachia: tempo è già va già bene, cioè va già molto bene.
+Davide Di Donato: Beh,
+Alessandro Peyrachia: Ok.
+Davide Di Donato: io io direi di eh quello che che volevo fare adesso in questi ultimi minuti era capire ovviamente da tutto quello che ti ho fatto vedere Enrico, eh le cose ovviamente su cui concentrarci perché come hai detto tu ovviamente non eh insomma è importante anche andare su quello che vi porta più via tempo adesso e qualità e cose per fare per sviluppare altra roba nel frattempo.
+Alessandro Peyrachia: M.
+Davide Di Donato: Quindi, la mia idea è anche arrivare magari a una chiamata che magari faremo nei prossima settimana, inizio prossima settimana o cose del genere, se possibile magari anche con Marco per poi dopo definire magari fare un debrief definire anche più o meno a livello di eh non ti dico un preventivo al centesimo perché quello lo vediamo in fase di trial perché lì riusciamo effettivamente a vedere gli ambienti monitorati e e tutte le metriche per fare un pricing, però riusciamo a capire magari un un ball park, insomma,
+ 
+ 
+00:57:41
+ 
+Alessandro Peyrachia: Sì, sì. No, ci sta,
+Davide Di Donato: più o meno di quanto per capire ovviamente se riusciamo a trovare tempo lato
+Alessandro Peyrachia: ci sta assolutamente. No, no,
+Davide Di Donato: tuo e e il lato del tuo team ovviamente sia anche quello del dei devs per appunto installare un ambiente di staging e fare questo paio di settimane di
+Alessandro Peyrachia: sì, sì,
+Davide Di Donato: trial e iniziare a vedere appunto.
+Alessandro Peyrachia: sì, sì.
+Davide Di Donato: Quindi
+Alessandro Peyrachia: Ma toglimi solo una curiosità, eh. La parte di di building su datad host più quantità di dati generalmente su cui viene fatta l'ingestion? Mi
+Davide Di Donato: Eh,
+Alessandro Peyrachia: sbaglio?
+Enrico Portolan: E è un po' di Fai tu.
+Davide Di Donato: vai, vai Enrico, vai, vai, tranquillo.
+Enrico Portolan: Allora, eh l'AT Cubernetis è numero di nodi, ok? Quindi host,
+Alessandro Peyrachia: Sì,
+Enrico Portolan: sì, l'APM identico. Tieni conto che il numero sempre il numero di nodi,
+Alessandro Peyrachia: sì.
+Enrico Portolan: eh se tu in un nodo hai 400 appi comunque uno.
+Alessandro Peyrachia: Ok. un nodo.
+ 
+ 
+00:58:32
+ 
+Enrico Portolan: Ok?
+Alessandro Peyrachia: Ok.
+Enrico Portolan: È il numero di nodi che generano trace.
+Alessandro Peyrachia: Sì. Ok.
+Enrico Portolan: Quindi è semplice.
+Alessandro Peyrachia: Sì. Ok.
+Enrico Portolan: E invece l'unica cosa che è in base al volume sono i log,
+Alessandro Peyrachia: Sì. Beh,
+Enrico Portolan: quindi il numero di log ingested.
+Alessandro Peyrachia: certo.
+Enrico Portolan: Però tieni conto che c'è la policy,
+Alessandro Peyrachia: Sì.
+Enrico Portolan: anzi l'approccio di datog eh si chiama log su out limit, quindi mandare i dati costa molto poco, è 10 cent a giga. Quello che impatta nel pring è la retention, quindi quanto tempo li voglio tenere?
+Alessandro Peyrachia: chat.
+Enrico Portolan: 7 15 30 giorni. Tieni conto che le puoi andare a filtrare per qualsiasi tipo di attributo,
+Alessandro Peyrachia: Ok.
+Enrico Portolan: quindi puoi anche dire i log de bug li butto,
+Alessandro Peyrachia: Sì, sì.
+Enrico Portolan: li tengo 3 giorni per dire,
+Alessandro Peyrachia: Ok,
+Enrico Portolan: quindi quello quello che impatta,
+Alessandro Peyrachia: ok,
+Enrico Portolan: Eh, Eh,
+Davide Di Donato: E invece C'è
+Alessandro Peyrachia: ok. Solo solo una cosa,
+ 
+ 
+00:59:14
+ 
+Davide Di Donato: Так.
+Alessandro Peyrachia: perché noi abbiamo ehm sicuramente a tendere avremo molti nodi, eh avremo un autoscaling molto, come dire eh aggressivo, quindi vuol dire che magari ci saranno dei job che gireranno su un nodo per magari un'ora e poi quel nodo lì viene cancellato. Lì come viene gestita la cosa? c'è un tempo minimo di, diciamo, di di building, quindi non so, il nodo viene sempre,
+Davide Di Donato: M.
+Alessandro Peyrachia: appena viene su viene calcolato come se fosse eh attivo, non so, un'ora, una settimana, un mese così o va per, diciamo, minuti, ore di utilizzo effettivo.
+Enrico Portolan: Sì. Ehm, allora, fa l'verage delle ore di un mese,
+Alessandro Peyrachia: Ok,
+Enrico Portolan: toglie i top 8, se ricordo bene, e poi ti dà quel valore lì.
+Alessandro Peyrachia: ok, ok, ok.
+Enrico Portolan: C'è fa una specie di waterfall, in sostanza.
+Alessandro Peyrachia: Sì, sì, sì, ho capito. Quindi,
+Enrico Portolan: Ehm,
+Alessandro Peyrachia: ma la media la media in minuti contati.
+Enrico Portolan: esatto. Tieni conto se tu hai tanti spike, magari fai finta che tu, non lo so,
+ 
+ 
+01:00:11
+ 
+Alessandro Peyrachia: Ok.
+Enrico Portolan: c'hai 50 nodi e a volte dagli spike vanno 80. A volte ha senso fare magari comprare 60 nodi, il resto lo paghi, lo puoi anche fare ad ore, ok?
+Alessandro Peyrachia: Sì.
+Enrico Portolan: gli altri container e quindi sul totale poi risparmi. Comunque sono tutte cose che poi riusciamo a vedere anche in trial
+Alessandro Peyrachia: Ok,
+Davide Di Donato: Sì.
+Enrico Portolan: insieme.
+Alessandro Peyrachia: ok, va
+Davide Di Donato: Mentre per quanto riguarda le sessioni di real user monitoring del quello che dicevi
+Alessandro Peyrachia: bene.
+Enrico Portolan: Ah, sì.
+Davide Di Donato: prima del session replay in cui puoi vedere dove gli altri vanno,
+Alessandro Peyrachia: Sì,
+Davide Di Donato: quello va per sessione, eh, quindi quello dipende appunto alla sessione.
+Alessandro Peyrachia: ok.
+Davide Di Donato: E per data Observability, ti dico la verità, lo sto vedendo adesso perché appunto è una cosa mega nuova e sappiamo tutti molto poco, però quello va per job per hour,
+Alessandro Peyrachia: Ok,
+Davide Di Donato: quindi siamo sono 10 cent per job per hour su airflow.
+Alessandro Peyrachia: ok, ok.
+Davide Di Donato: Eh sì,
+Alessandro Peyrachia: Quindi mi traccio quanti job faccio girare allora e fine della fiera.
+Davide Di Donato: sì.
+ 
+ 
+01:01:11
+ 
+Alessandro Peyrachia: Ok, va
+Davide Di Donato: E niente, quindi ti dicevo, giusto per fare un recap,
+Alessandro Peyrachia: bene.
+Davide Di Donato: io farei una chiamata e metto anche mano al calendario al frattempo, eh, farei una chiamatina settimana prossima quando tu hai un po'
+Alessandro Peyrachia: Sì, sì, guarda, io adesso ne parlo con Marco,
+Davide Di Donato: di
+Alessandro Peyrachia: tanto domani mi hai detto che si collega.
+Davide Di Donato: Esatto.
+Alessandro Peyrachia: Oggi è cotto,
+Davide Di Donato: No, no,
+Alessandro Peyrachia: quindi
+Davide Di Donato: ma cioè non c'è assolutamente nessun nessun problema e nessuna, insomma, velocità, quindi se riusciamo a sentirci entro settimana prossima, magari tipo martedì per me sarebbe top e magari eh sì, magari se nel frattempo riesci a sentirti con Marco,
+Alessandro Peyrachia: Sì,
+Davide Di Donato: se sta ancora male ovviamente no.
+Alessandro Peyrachia: assolutamente.
+Davide Di Donato: Eh io ti mando nel frattempo tutto quello che abbiamo visto come recap,
+Alessandro Peyrachia: Perfetto. Ottimo. Grazie.
+Davide Di Donato: eh un paio di link anche specialmente a data Observability perché come anche per
+Alessandro Peyrachia: Sì, perché questo mi sposta,
+Davide Di Donato: noi.
+Alessandro Peyrachia: te l'ho detto,
+Davide Di Donato: Eh
+Alessandro Peyrachia: mi sposta completamente la valutazione anche a livello di dove mettere il budget, perché se mi tolgo un problema del genere già tanta
+ 
+ 
+01:02:07
+ 
+Enrico Portolan: M.
+Davide Di Donato: capito, capito,
+Alessandro Peyrachia: roba.
+Davide Di Donato: capito. E e niente, sì, quello che vorrei discutere magari alla prossima go è appunto capire quello che vi porta subito valore, quello che avete visto, insomma, le cose più importanti, ma più o meno l'abbiamo già capito, però ci sono già un bel po' di cose da da di carne al fuoco, diciamo. e poi dopo, insomma, capire se c'è se c'è il lo spazio per fare per fare queste due settimane di
+Alessandro Peyrachia: Sì.
+Davide Di Donato: trial in cui dopo vediamo effettivamente quanto andreste a pagare con un contratto e andrete soprattutto, più importante di tutto, andrete a vedere quanto tempo magari risparmiate con tutte le funzioni che ti ha fatto vedere Enrico.
+Alessandro Peyrachia: Sì, sì, sì, sì, sì, sì. Mi sono dimenticato di chiedere una cosa. Eh, adesso noi stiamo spostando il datalake verso fuori da Asure perché come costi è ingestibile, soprattutto per il tipo di lavoro che dovremmo farci su. C'è per caso un'integrazione con Back Blaze? che è un S3 normalissimo, quindi niente di particolare,
+Enrico Portolan: Come si chiama?
+Alessandro Peyrachia: però back blaze scritto back
+ 
+ 
+01:03:08
+ 
+Enrico Portolan: E cosa vorresti
+Alessandro Peyrachia: eh è semplicemente è un provider di storage S3,
+Enrico Portolan: delle
+Alessandro Peyrachia: quindi giusto per capire se c'è qualcosa di nativo con loro oppure se c'è un modo per monitorare l'S3 a livello di
+Enrico Portolan: No, non lo vedo. Sì,
+Alessandro Peyrachia: performance che però non è dentro,
+Enrico Portolan: l'S3. Sì,
+Alessandro Peyrachia: è un S3 compatibile, quindi è esterno,
+Enrico Portolan: ok.
+Alessandro Peyrachia: potrebbe essere questo anche mi interessa.
+Davide Di Donato: A back.
+Alessandro Peyrachia: Back blaze.
+Enrico Portolan: Back blades. Ok.
+Alessandro Peyrachia: Backplays. Sì, fanno fanno sono specializzati in quello, fanno storage,
+Enrico Portolan: Possiamo cercare di Allora,
+Alessandro Peyrachia: principalmente il loro B2 si chiama, però è un S3 compatibile,
+Enrico Portolan: ok.
+Alessandro Peyrachia: quindi semplicemente capire se c'è qualcosa per anche solo aggregare i dati della loro eh magari della loro API di di gestione o cose del genere, giusto per avere un'idea e avere un pannello omnicomprensivo perché ovviamente, cioè poi quello che è interessante di avere il pannello unico, sennò devo andare a vedere su place cosa stiamo facendo, tutte quelle cose lì.
+ 
+ 
+01:04:11
+ 
+Alessandro Peyrachia: Niente di niente di strano,
+Enrico Portolan: Lol. Guardiamo anche con i PM di con i product manager di di integration se è una cosa
+Alessandro Peyrachia: comunque.
+Enrico Portolan: che ci sarà o no.
+Davide Di Donato: Ok.
+Enrico Portolan: O alla peggio peggio possiamo pushare delle metriche custom. Eh,
+Alessandro Peyrachia: Sì, magari.
+Enrico Portolan: però adesso lo vediamo io.
+Alessandro Peyrachia: Sì, è che il problema è che loro sono un po' sono un po' carenti su questa cosa e al momento e ci stanno lavorando,
+Enrico Portolan: Ok.
+Alessandro Peyrachia: però non sono, insomma, hanno solo un report, hanno sì un API per vedere le metriche, ma è roba che veramente base. E hanno poi un report invece molto dettagliato che però abbiamo già previsto di fare l'ingestion, tritarlo, trasformarlo in una in un oggetto fruibile per noi da aggregare con resto delle metriche. Vabbè, detto ciò,
+Davide Di Donato: Eh,
+Alessandro Peyrachia: ma comunque dai e è giusto per capire. Va bene,
+Davide Di Donato: ok.
+Alessandro Peyrachia: ottimo.
+Davide Di Donato: Magari penso che Enrico debba scappare.
+Alessandro Peyrachia: Sì, sì,
+Davide Di Donato: Non so se No,
+Alessandro Peyrachia: guarda.
+ 
+ 
+01:05:02
+ 
+Alessandro Peyrachia: Grazie mille. Scusate i 5 minuti extra.
+Davide Di Donato: no,
+Alessandro Peyrachia: Eh,
+Davide Di Donato: figurati. Grazie a te che sei rimasto,
+Alessandro Peyrachia: grazie mille ancora, Enrico.
+Davide Di Donato: eh ti volevo giusto magari eh giusto fissare al volo per così che ce l'abbiamo e poi non ti disturbo via mail.
+Alessandro Peyrachia: Sì.
+Davide Di Donato: Eh io avrei martedì 27 il pomeriggio dalle 2:00 alle 2:30 è
+Alessandro Peyrachia: Eh, al martedì, no, alle 2:00 perché facciamo il il Bekly,
+Davide Di Donato: difficile. Ah, ok.
+Alessandro Peyrachia: quindi eh quello non lo posso saltare.
+Davide Di Donato: Fine giornata,
+Alessandro Peyrachia: Eh,
+Davide Di Donato: meglio.
+Alessandro Peyrachia: fine giornata. Sì, sì, va bene. Sì, sì,
+Davide Di Donato: 4 e30 5 o 4 e
+Alessandro Peyrachia: sì, sì. Fai Sì,
+Davide Di Donato: me Ok.
+Alessandro Peyrachia: sì. 4 e30 5. Va bene. Sì, sì, perfetto.
+Davide Di Donato: Io io preferisco 44 e me se per te.
+ 
+ 
+01:05:42
+ 
+Alessandro Peyrachia: Alf 44 e per me non cambia niente.
+Davide Di Donato: Ok.
+Alessandro Peyrachia: Sono resto del pomeriggio e poi sono libero.
+Davide Di Donato: Ok, a posto. Va bene. Allora,
+Alessandro Peyrachia: Ottimo.
+Davide Di Donato: ci sentiamo settimana prossima. Grazie mille di essere rimastoenteamente e
+Alessandro Peyrachia: Grazie a te. Grazie mille eh per la vostra presentazione.
+Davide Di Donato: insieme.
+Alessandro Peyrachia: M ho preso degli spunti molto interessanti. Adesso ne parlo con Marco e ci risentiamo.
+Davide Di Donato: Mi ha fatto piacere.
+Alessandro Peyrachia: Dai.
+Davide Di Donato: Devo dire questa è la prima volta che mi è successo che ci hai fatto tu una demo a noi per quanto riguarda
+Alessandro Peyrachia: Eh, ma ragazzi, io qua qua ho dovuto imparare,
+Davide Di Donato: Totivo.
+Alessandro Peyrachia: ho dovuto portare il modo di lavorare da consulente nell'azienda di prodotto, quindi, cioè, sono abituato anch'io a fare le demo,
+Davide Di Donato: Sì.
+Alessandro Peyrachia: a chiedere cose che la gente non non li
+Davide Di Donato: No, no, hai fatto benissimo. A noi fa molto piacere quando ci sono quando è così.
+Alessandro Peyrachia: vede.
+Davide Di Donato: Ti dico tante volte magari stanno leggendo altre cose oppure sono distratti, quindi ci fa molto
+Alessandro Peyrachia: No, ma qui no non è il mio caso. Nel senso,
+Davide Di Donato: piacere.
+Alessandro Peyrachia: la parte di eh diciamo di monitoring classico l'ho vista stravista e rivista, però volevo vedere se si era mosso qualcosa. Cioè c'è tutto. A parte i datservability invece mi ha fatto proprio accendere la luce perché è quello è la parte complessa che dobbiamo fare. Quindi il resto resto è cioè ci sta.
+ 
+ 
+Trascrizione terminata dopo 01:07:11
+
+
+Questa trascrizione modificabile è stata generata dal computer e potrebbe contenere errori. È possibile anche modificare manualmente il testo dopo la creazione.

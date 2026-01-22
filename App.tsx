@@ -1,7 +1,8 @@
 import React, { useState, useRef } from 'react';
 import { analyzeTranscript } from './services/geminiService';
 import Dashboard from './components/Dashboard';
-import { AnalysisResult, ViewState, MOCK_TRANSCRIPT } from './types';
+import CallDetailsForm from './components/CallDetailsForm';
+import { AnalysisResult, ViewState, MOCK_TRANSCRIPT, CallMetadata, Participant } from './types';
 import { Upload, FileText, Loader2, ArrowLeft, Clipboard, FileUp } from 'lucide-react';
 
 const App: React.FC = () => {
@@ -12,17 +13,76 @@ const App: React.FC = () => {
   const [error, setError] = useState<string | null>(null);
   const fileInputRef = useRef<HTMLInputElement>(null);
 
-  const handleAnalyze = async (textToAnalyze: string) => {
+  // Call Metadata State
+  const [metadata, setMetadata] = useState<CallMetadata>({ title: '', customerName: '' });
+  const [participants, setParticipants] = useState<Participant[]>([]);
+
+  const parseTranscriptMetadata = (text: string) => {
+    // Basic heuristics to find title, duration, participants
+    const lines = text.split('\n').slice(0, 20); // Check first 20 lines
+    let title = '';
+    let customerName = '';
+    let duration = '';
+    let date = '';
+
+    // Naive parsing logic
+    const titleLine = lines.find(l => l.toLowerCase().includes('demo') || l.includes('<>') || l.includes(' - '));
+    if (titleLine) {
+      title = titleLine.trim();
+      if (title.includes('<>')) {
+        const parts = title.split('<>');
+        if (parts.length > 1) {
+          // Assuming format "Datadog <> Customer"
+          const possibleCustomer = parts[1].split('-')[0].trim();
+          if (possibleCustomer && possibleCustomer.toLowerCase() !== 'datadog') {
+            customerName = possibleCustomer;
+          }
+        }
+      }
+    }
+
+    const dateLine = lines.find(l => l.match(/\d{1,2}\s+\w+\s+\d{4}/)); // e.g. 21 gen 2026
+    if (dateLine) date = dateLine.trim();
+
+    setMetadata({ title, customerName, date, duration });
+
+    // Attempt to identify speakers
+    // Matches "Name Surname:" or "Name Middle Surname:" (2+ capitalized words)
+    const speakerRegex = /^([A-Z][a-z]+(?: [A-Z][a-z]+)+):/gm;
+    const matches = [...text.matchAll(speakerRegex)];
+    const uniqueSpeakers = Array.from(new Set(matches.map(m => m[1])));
+
+    const detectedParticipants: Participant[] = uniqueSpeakers.map((name, index) => ({
+      name,
+      role: index === 0 ? 'SE' : 'Prospect' // Default first found to SE, rest Prospects (user will correct)
+    }));
+
+    if (detectedParticipants.length === 0) {
+      // Defaults if no detection
+      detectedParticipants.push({ name: '', role: 'SE' });
+      detectedParticipants.push({ name: '', role: 'AE' });
+      detectedParticipants.push({ name: '', role: 'Prospect' });
+    }
+
+    setParticipants(detectedParticipants);
+  };
+
+  const startConfirmation = (textToAnalyze: string) => {
     if (textToAnalyze.length < 50) {
       setError("Transcript is too short. Please provide at least 50 characters.");
       return;
     }
+    setError(null);
+    parseTranscriptMetadata(textToAnalyze);
+    setView('confirming');
+  };
 
+  const handleAnalyze = async (finalMetadata: CallMetadata, finalParticipants: Participant[]) => {
     setView('analyzing');
     setError(null);
-    
+
     try {
-      const data = await analyzeTranscript(textToAnalyze);
+      const data = await analyzeTranscript(transcript, finalMetadata, finalParticipants);
       setResult(data);
       setView('dashboard');
     } catch (e) {
@@ -38,7 +98,7 @@ const App: React.FC = () => {
       reader.onload = (e) => {
         const text = e.target?.result as string;
         setTranscript(text);
-        handleAnalyze(text);
+        startConfirmation(text);
       };
       reader.readAsText(file);
     }
@@ -52,7 +112,7 @@ const App: React.FC = () => {
       reader.onload = (e) => {
         const text = e.target?.result as string;
         setTranscript(text);
-        handleAnalyze(text);
+        startConfirmation(text);
       };
       reader.readAsText(file);
     } else {
@@ -67,55 +127,55 @@ const App: React.FC = () => {
 
   return (
     <div className="min-h-screen bg-white text-black flex flex-col font-sans">
-      
+
       {/* Minimal Header - Only show if not on landing to keep landing pure */}
       {view !== 'landing' && (
         <header className="h-16 flex items-center justify-between px-8 border-b border-gray-100">
-          <div 
-            className="font-bold text-lg tracking-tight cursor-pointer" 
+          <div
+            className="font-bold text-lg tracking-tight cursor-pointer"
             onClick={() => setView('landing')}
           >
             DemoInsight
           </div>
           {view === 'dashboard' && (
-             <button 
-             onClick={() => {
-               setTranscript('');
-               setView('landing');
-             }}
-             className="text-sm text-gray-400 hover:text-black transition-colors"
-           >
-             Start Over
-           </button>
+            <button
+              onClick={() => {
+                setTranscript('');
+                setView('landing');
+              }}
+              className="text-sm text-gray-400 hover:text-black transition-colors"
+            >
+              Start Over
+            </button>
           )}
         </header>
       )}
 
       {/* Main Content Area */}
       <main className="flex-1 flex flex-col">
-        
+
         {/* LANDING VIEW */}
         {view === 'landing' && (
           <div className="flex-1 flex flex-col items-center justify-center p-8 animate-fade-in">
             <h1 className="text-4xl font-light mb-12 tracking-tight text-center">
               How would you like to analyze?
             </h1>
-            
+
             <div className="grid grid-cols-1 md:grid-cols-2 gap-8 w-full max-w-4xl">
-              
+
               {/* Option 1: Drag & Drop / File Upload */}
-              <div 
+              <div
                 className="group relative h-80 border border-gray-200 rounded-lg flex flex-col items-center justify-center cursor-pointer hover:border-black hover:bg-gray-50 transition-all duration-300"
                 onClick={() => fileInputRef.current?.click()}
                 onDragOver={(e) => e.preventDefault()}
                 onDrop={handleDrop}
               >
-                <input 
-                  type="file" 
-                  ref={fileInputRef} 
-                  className="hidden" 
-                  accept=".txt" 
-                  onChange={handleFileUpload} 
+                <input
+                  type="file"
+                  ref={fileInputRef}
+                  className="hidden"
+                  accept=".txt"
+                  onChange={handleFileUpload}
                 />
                 <div className="bg-gray-100 p-6 rounded-full mb-6 group-hover:scale-110 transition-transform duration-300">
                   <FileUp size={40} className="text-black" />
@@ -125,7 +185,7 @@ const App: React.FC = () => {
               </div>
 
               {/* Option 2: Copy Paste */}
-              <div 
+              <div
                 className="group h-80 border border-gray-200 rounded-lg flex flex-col items-center justify-center cursor-pointer hover:border-black hover:bg-gray-50 transition-all duration-300"
                 onClick={() => setView('paste')}
               >
@@ -134,6 +194,21 @@ const App: React.FC = () => {
                 </div>
                 <h2 className="text-xl font-medium mb-2">Paste transcript</h2>
                 <p className="text-gray-400 text-sm">Copy directly from clipboard</p>
+              </div>
+
+              {/* Option 3: RenewCast Transcript */}
+              <div
+                className="group h-80 border border-gray-200 rounded-lg flex flex-col items-center justify-center cursor-pointer hover:border-black hover:bg-gray-50 transition-all duration-300 col-span-1 md:col-span-2"
+                onClick={() => {
+                  setTranscript(MOCK_TRANSCRIPT);
+                  startConfirmation(MOCK_TRANSCRIPT);
+                }}
+              >
+                <div className="bg-gray-100 p-6 rounded-full mb-6 group-hover:scale-110 transition-transform duration-300">
+                  <FileText size={40} className="text-black" />
+                </div>
+                <h2 className="text-xl font-medium mb-2">Use built-in RenewCast Transcript</h2>
+                <p className="text-gray-400 text-sm">Analyze the pre-loaded demo</p>
               </div>
 
             </div>
@@ -146,8 +221,8 @@ const App: React.FC = () => {
         {view === 'paste' && (
           <div className="flex-1 flex flex-col items-center p-8 max-w-4xl mx-auto w-full">
             <div className="w-full flex justify-between items-end mb-4">
-              <button 
-                onClick={() => setView('landing')} 
+              <button
+                onClick={() => setView('landing')}
                 className="flex items-center gap-2 text-sm text-gray-500 hover:text-black transition-colors"
               >
                 <ArrowLeft size={16} /> Back
@@ -168,14 +243,24 @@ const App: React.FC = () => {
 
             <div className="w-full mt-6 flex justify-end">
               <button
-                onClick={() => handleAnalyze(transcript)}
+                onClick={() => startConfirmation(transcript)}
                 disabled={!transcript}
                 className="bg-black text-white px-8 py-4 rounded-lg font-medium text-sm hover:bg-gray-800 disabled:opacity-30 disabled:cursor-not-allowed transition-all shadow-lg hover:shadow-xl translate-y-0 hover:-translate-y-1"
               >
-                Analyze Conversation
+                Next: Confirm Details
               </button>
             </div>
           </div>
+        )}
+
+        {/* CONFIRMING VIEW */}
+        {view === 'confirming' && (
+          <CallDetailsForm
+            initialMetadata={metadata}
+            initialParticipants={participants}
+            onConfirm={handleAnalyze}
+            onCancel={() => setView('landing')}
+          />
         )}
 
         {/* ANALYZING VIEW */}
@@ -188,12 +273,12 @@ const App: React.FC = () => {
 
         {/* DASHBOARD VIEW */}
         {view === 'dashboard' && result && (
-          <Dashboard 
-            data={result} 
+          <Dashboard
+            data={result}
             onReset={() => {
               setTranscript('');
               setView('landing');
-            }} 
+            }}
           />
         )}
       </main>

@@ -1,100 +1,245 @@
 import { GoogleGenAI, Type } from "@google/genai";
-import { AnalysisResult } from "../types";
+import { AnalysisResult, CallMetadata, Participant } from "../types";
 
-// Fallback mock data
+// Fallback mock data - RenewCast Italian Demo
 const MOCK_ANALYSIS: AnalysisResult = {
   metrics: {
-    satisfactionScore: 78,
-    engagementRate: 85,
-    objectionCount: 1,
-    positiveSignalCount: 4
+    satisfactionScore: 88,
+    engagementRate: 92,
+    objectionCount: 1, // "costa veramente tanto" mention
+    positiveSignalCount: 8
   },
   timeline: [
-    { time: "00:45", description: "Prospect confirms visibility pain point", sentiment: "negative", type: "engagement", quote: "It's a black box when things go down." },
-    { time: "01:20", description: "Strong interest in Infrastructure Map", sentiment: "positive", type: "feature", quote: "Wow, does it handle containers too? We use Kubernetes heavily." },
-    { time: "02:15", description: "Prospect mentions Alert Fatigue", sentiment: "negative", type: "objection", quote: "But my team is drowning in alerts right now. We get PagerDuty storms every night." },
-    { time: "03:40", description: "Concern about Log retention costs", sentiment: "neutral", type: "question", quote: "How much does the log retention cost though? That's a concern for finance." },
-    { time: "04:30", description: "Enthusiasm for APM Traces and MTTR reduction", sentiment: "positive", type: "engagement", quote: "This is exactly what we need to lower our MTTR." }
+    { time: "00:53", description: "Prospect confirms need for centralization", sentiment: "neutral", type: "engagement", quote: "quello che vogliamo fare è appunto è uscire da Ratabrix e cominciare a usare Airflow" },
+    { time: "03:10", description: "Prospect describes current pain with custom scripts", sentiment: "negative", type: "objection", quote: "Abbiamo poi settato noi delle delle qui per con delle thell specifiche... non è che abbiamo un grande monitoraggio" },
+    { time: "05:22", description: "Interest in Frontend/API correlation", sentiment: "positive", type: "feature", quote: "vedere se ci sono, per esempio, delle latenze esagerate andando verso il database" },
+    { time: "16:45", description: "Strong interest in Data Jobs & Airflow module", sentiment: "positive", type: "feature", quote: "si vede all'interno della dell'esecuzione come... Ah, ok, è bello." },
+    { time: "30:26", description: "Prospect validates cost savings potential", sentiment: "positive", type: "engagement", quote: "Questo questo è interessante... andare a vedere effettivamente cosa stiamo spendendo" },
+    { time: "31:29", description: "Maintenance burden of custom solutions", sentiment: "negative", type: "objection", quote: "se devi aggiungere una categoria, devi andare nel codice... costa veramente tanto" },
+    { time: "33:34", description: "Excitement about AI/ML observability", sentiment: "positive", type: "question", quote: "Posso chiedere solo mentre siamo qua la parte di cosa si può fare con la parte di AI observability" }
   ],
   painPoints: [
-    { category: "Infrastructure Visibility", resonanceScore: 95, mentionCount: 2, evidence: "It's a black box when things go down." },
-    { category: "Alert Fatigue", resonanceScore: 90, mentionCount: 1, evidence: "Drowning in alerts right now." },
-    { category: "Cost Management", resonanceScore: 60, mentionCount: 1, evidence: "How much does log retention cost?" },
-    { category: "Troubleshooting Efficiency", resonanceScore: 85, mentionCount: 1, evidence: "Need to lower our MTTR." }
+    { category: "Tool Sprawl & Fragmentation", resonanceScore: 90, mentionCount: 3, evidence: "utilizzo magari di diversi tool per fare delle cose adiacenti" },
+    { category: "Maintenance Overhead", resonanceScore: 95, mentionCount: 4, evidence: "devi scriverti del codice Python e testarlo... costa veramente tanto" },
+    { category: "Lack of Visibility", resonanceScore: 85, mentionCount: 2, evidence: "It's a black box when things go down" }, // Keeping generic fallback if not exact match found, but here: "non è che abbiamo un grande monitoraggio"
+    { category: "Cost Management", resonanceScore: 80, mentionCount: 2, evidence: "Databricks comunque vi costava parecchio" }
   ],
   featureHeatmap: [
-    { name: "Infrastructure", category: "Monitoring", interestLevel: "High", timeSpentMinutes: 3 },
-    { name: "APM", category: "Monitoring", interestLevel: "High", timeSpentMinutes: 2 },
-    { name: "Logs", category: "Data", interestLevel: "Medium", timeSpentMinutes: 2 },
-    { name: "Watchdog", category: "Intelligence", interestLevel: "Medium", timeSpentMinutes: 1 },
-    { name: "Security", category: "Security", interestLevel: "Low", timeSpentMinutes: 0 }
+    { name: "Data Jobs (Airflow)", category: "Data", interestLevel: "High", timeSpentMinutes: 12 },
+    { name: "Kubernetes", category: "Monitoring", interestLevel: "High", timeSpentMinutes: 10 },
+    { name: "APM", category: "Monitoring", interestLevel: "Medium", timeSpentMinutes: 5 },
+    { name: "RUM / Frontend", category: "Monitoring", interestLevel: "Low", timeSpentMinutes: 3 },
+    { name: "Cloud Cost", category: "Data", interestLevel: "High", timeSpentMinutes: 6 }
   ],
   emailDraft: {
-    subject: "Datadog Demo Follow-up: Solving Visibility & Alert Fatigue",
-    body: "Hi Alex,\n\nThanks for the time today. It was great to hear how Datadog can help solve the visibility 'black box' issues you're facing with your hybrid setup.\n\nBased on our conversation, I wanted to highlight:\n1. Infrastructure Map: Full visibility into your K8s containers.\n2. Watchdog: Reducing that alert fatigue you mentioned.\n3. Cost Control: Our decoupled ingestion/indexing for logs.\n\nI'm attaching the implementation guide we discussed. Let's touch base Tuesday?\n\nBest,\n[Your Name]"
+    subject: "RenewCast + Datadog: Centralizzare Airflow e Kubernetes",
+    body: "Ciao Alessandro,\n\nGrazie per il tempo dedicato oggi. È stato interessante approfondire come state migrando i job da Databricks ad Airflow su AKS.\n\nEcco i punti chiave discussi:\n1. **Data Observability**: Il modulo Airflow vi permetterà di vedere ogni singolo task failed senza script custom.\n2. **Kubernetes**: Visibilità completa sui pod e correlazione immediata con le trace APM.\n3. **Ottimizzazione Costi**: Sostituire il vostro script Python di riconciliazione con la nostra Cloud Cost Management automatica.\n\nIn allegato trovi la guida per l'agent di Kubernetes. Ci aggiorniamo settimana prossima per la trial?\n\nA presto,\nEnrico"
   }
 };
 
 // DATADOG PRODUCT BASELINE (JANUARY 2026) - TRUTH SOURCE
 const DATADOG_KNOWLEDGE_BASE = `
-1. OBSERVABILITY - INFRASTRUCTURE & CLOUD
-- Infrastructure Monitoring: Monitor hosts & cloud resources.
-- Network Monitoring: Network flows, topology, NPM.
-- Container Monitoring: Kubernetes & containers.
-- Kubernetes Autoscaling: Rightsize K8s resources.
-- Serverless: Observe serverless apps end-to-end.
-- Cloud Cost Management: FinOps, correlate spend.
-- Cloudcraft: Visualize architectures.
+# Datadog Product Baseline (Jan 2026)
 
-2. OBSERVABILITY - APPLICATIONS & SERVICES
-- APM: Trace and optimize app performance.
-- Universal Service Monitoring: eBPF discovery without code changes.
-- Software Catalog: Service ownership & metadata.
-- Database Monitoring: Query analytics, explain plans.
-- Continuous Profiler: Optimize code CPU/memory.
-- Error Tracking: Group and prioritize errors.
-- LLM Observability: Monitor LLM app quality & cost.
-- Data Streams Monitoring: Event-driven pipeline latency.
-- Quality Monitoring: Data freshness, schema changes.
+## Purpose
+This document provides a normalized, end-to-end inventory of Datadog products and major capabilities as of January 2026.  
+It is designed as a **baseline reference for AI-driven analysis of customer reactions during Datadog demos**, enabling consistent tagging of features, outcomes, and buyer signals.
 
-3. OBSERVABILITY - LOGS & DATA
-- Log Management: Search, analyze, index, "Logging without Limits".
-- Observability Pipelines: Process/route telemetry, sensitive data reduction.
-- CloudPrem: BYOC log storage.
-- Sensitive Data Scanner: PII detection.
-- Audit Trail: Track changes/governance.
+---
 
-4. DIGITAL EXPERIENCE
-- Browser RUM: Real User Monitoring, Web Vitals.
-- Mobile RUM: Mobile app experience.
-- Session Replay: Debug UX visually.
-- Synthetic Monitoring: API & Browser tests.
-- Product Analytics: Funnels, cohorts.
+## Observability Core
 
-5. SECURITY
-- Cloud Security: Posture (CSPM), Workload Protection (CWP).
-- App & API Protection: WAF-like threat detection.
-- Code Security: SAST, SCA, IAST, Secret Scanning.
-- Cloud SIEM: Log-based detections.
+### Infrastructure Monitoring
+- Host, VM, container, and cloud infrastructure metrics
+- Kubernetes, serverless, and autoscaling visibility
+- Unified tags across environments
+- Cost-aware infrastructure correlation
 
-6. SOFTWARE DELIVERY & SERVICE MANAGEMENT
-- CI Visibility: Pipeline analytics.
-- Test Optimization: Flaky tests.
-- DORA Metrics: Delivery performance.
-- Service Level Objectives (SLOs): Error budgets.
-- Incident Response: Coordination.
+**Primary outcomes:** availability, capacity planning, infra efficiency
 
-7. AI & PLATFORM
-- Watchdog: Automated anomaly detection (AI).
-- Bits AI: Agentic assistance.
-- Teams, Dashboards, Notebooks.
+---
 
-REACTION BASELINE (SENTIMENT CUES):
-- Positive: "single pane", "correlate", "reduce MTTR", "OpenTelemetry", "service map", "user journey", "replay", "CNAPP", "shift-left".
-- Concerns/Objections: "agent overhead", "ingestion volume", "cost", "retention", "privacy/PII", "sampling", "false positives", "alert fatigue".
+### Application Performance Monitoring (APM)
+- Distributed tracing
+- Service maps and dependency graphs
+- Latency, error, and throughput analysis
+- Continuous profiler
+
+**Primary outcomes:** performance optimization, root cause analysis
+
+---
+
+### Log Management
+- Centralized log ingestion and indexing
+- Live tail, rehydration, and archives
+- Log-based metrics
+- Native correlation with traces and metrics
+
+**Primary outcomes:** troubleshooting speed, auditability
+
+---
+
+### Real User Monitoring (RUM)
+- Browser and mobile user session tracking
+- Core Web Vitals
+- Session replay
+- Frontend error monitoring
+
+**Primary outcomes:** user experience optimization, frontend reliability
+
+---
+
+### Synthetic Monitoring
+- API and browser tests
+- Global test locations
+- CI/CD integration
+- Performance regression detection
+
+**Primary outcomes:** proactive availability validation
+
+---
+
+## Cloud & Platform Engineering
+
+### Cloud Security Posture Management (CSPM)
+- Cloud misconfiguration detection
+- Compliance frameworks (CIS, SOC2, ISO)
+- Drift detection
+- Risk prioritization
+
+---
+
+### Cloud Workload Security (CWS)
+- Runtime threat detection
+- Kernel-level signals
+- Workload behavioral baselining
+
+---
+
+### Application Security Management (ASM)
+- SAST, DAST, IAST
+- Runtime vulnerability detection
+- Code-to-runtime correlation
+
+---
+
+### API Security
+- API discovery and inventory
+- Authentication and abuse detection
+- Schema drift monitoring
+
+---
+
+### Software Composition Analysis (SCA)
+- Open-source dependency risk
+- Vulnerability and license tracking
+- Runtime exploitability context
+
+---
+
+## DevOps & Reliability
+
+### Incident Management
+- On-call scheduling
+- Incident timelines
+- Postmortems
+- PagerDuty-style workflows
+
+---
+
+### Service Level Objectives (SLOs)
+- Error budgets
+- Burn rate alerts
+- Reliability scoring
+
+---
+
+### Continuous Testing
+- Test optimization insights
+- CI visibility
+- Test failure correlation
+
+---
+
+## Data, Cost, and Optimization
+
+### Cloud Cost Management
+- Cost allocation and tagging
+- Forecasting
+- Waste detection
+- Cost-performance tradeoff analysis
+
+---
+
+### Database Monitoring
+- Query-level visibility
+- Lock and replication analysis
+- Managed DB integrations
+
+---
+
+### Storage Monitoring
+- Block, object, and file storage performance
+- Cost vs usage correlation
+
+---
+
+## AI & Advanced Analytics
+
+### Bits AI
+- Natural language querying
+- Root cause suggestions
+- Incident summarization
+- Cross-product reasoning
+
+---
+
+### LLM Observability
+- Prompt and response tracing
+- Latency and cost tracking
+- Model comparison
+- Hallucination detection patterns
+
+---
+
+## Collaboration & Support
+
+### CoScreen
+- Secure screen sharing
+- Remote debugging
+- Embedded support workflows
+
+---
+
+## Platform Capabilities (Cross-Cutting)
+
+- Unified tagging model
+- OpenTelemetry native support
+- 700+ integrations
+- Role-based access control
+- Data pipelines and routing
+- Multi-region data residency
+
+---
+
+## AI Labeling Guidance (for Demo Analysis)
+
+**Recommended dimensions:**
+- Product(s) referenced
+- Buyer persona (DevOps, SRE, Security, FinOps, Eng)
+- Pain addressed (latency, risk, cost, visibility)
+- Reaction signal (interest, confusion, objection, excitement)
+- Competitive displacement indicator
+
+---
+
+## Notes
+- Product naming aligns with Datadog public catalog as of Jan 2026.
+- Internal sales talk tracks, pricing, and competitive positioning should be layered on top of this baseline.
+- Document intentionally optimized for machine parsing and semantic tagging.
 `;
 
-export const analyzeTranscript = async (transcript: string): Promise<AnalysisResult> => {
+export const analyzeTranscript = async (transcript: string, metadata?: CallMetadata, participants?: Participant[]): Promise<AnalysisResult> => {
   const apiKey = process.env.API_KEY;
 
   if (!apiKey) {
@@ -104,12 +249,30 @@ export const analyzeTranscript = async (transcript: string): Promise<AnalysisRes
 
   try {
     const ai = new GoogleGenAI({ apiKey });
-    
+
+    // Format context from metadata/participants
+    let contextBlock = "";
+    if (metadata || participants) {
+      contextBlock = `
+        *** CALL CONTEXT ***
+        Title: ${metadata?.title || 'Unknown'}
+        Customer: ${metadata?.customerName || 'Unknown'}
+        
+        PARTICIPANTS:
+        ${participants?.map(p => `- ${p.name} (${p.role})${p.title ? ` - ${p.title}` : ''}`).join('\n') || 'Unknown'}
+        
+        INSTRUCTION: Focus analysis on the needs, verbatims, and objections of the **Prospects** identified above.
+        *** END CONTEXT ***
+        `;
+    }
+
     // Strict prompt engineered for consistency and adherence to the taxonomy
     const prompt = `
       You are an expert Datadog Sales Coach and Product Analyst.
       Your task is to analyze a sales demo transcript using the strictly defined "Datadog Product Baseline (2026)" provided below.
       
+      ${contextBlock}
+
       *** START KNOWLEDGE BASE ***
       ${DATADOG_KNOWLEDGE_BASE}
       *** END KNOWLEDGE BASE ***
@@ -204,7 +367,7 @@ export const analyzeTranscript = async (transcript: string): Promise<AnalysisRes
 
     const text = response.text;
     if (!text) throw new Error("Empty response from AI");
-    
+
     return JSON.parse(text) as AnalysisResult;
 
   } catch (error) {
