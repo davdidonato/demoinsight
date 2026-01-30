@@ -10,19 +10,19 @@ const MOCK_ANALYSIS: AnalysisResult = {
     positiveSignalCount: 8
   },
   timeline: [
-    { time: "00:53", description: "Prospect confirms need for centralization", sentiment: "neutral", type: "engagement", quote: "quello che vogliamo fare è appunto è uscire da Ratabrix e cominciare a usare Airflow" },
-    { time: "03:10", description: "Prospect describes current pain with custom scripts", sentiment: "negative", type: "objection", quote: "Abbiamo poi settato noi delle delle qui per con delle thell specifiche... non è che abbiamo un grande monitoraggio" },
-    { time: "05:22", description: "Interest in Frontend/API correlation", sentiment: "positive", type: "feature", quote: "vedere se ci sono, per esempio, delle latenze esagerate andando verso il database" },
-    { time: "16:45", description: "Strong interest in Data Jobs & Airflow module", sentiment: "positive", type: "feature", quote: "si vede all'interno della dell'esecuzione come... Ah, ok, è bello." },
-    { time: "30:26", description: "Prospect validates cost savings potential", sentiment: "positive", type: "engagement", quote: "Questo questo è interessante... andare a vedere effettivamente cosa stiamo spendendo" },
-    { time: "31:29", description: "Maintenance burden of custom solutions", sentiment: "negative", type: "objection", quote: "se devi aggiungere una categoria, devi andare nel codice... costa veramente tanto" },
-    { time: "33:34", description: "Excitement about AI/ML observability", sentiment: "positive", type: "question", quote: "Posso chiedere solo mentre siamo qua la parte di cosa si può fare con la parte di AI observability" }
+    { time: "00:53", description: "Prospect confirms need for centralization", sentiment: "neutral", type: "engagement", quote: "quello che vogliamo fare è appunto è uscire da Ratabrix e cominciare a usare Airflow", reasoning: "Acknowledgment of valid use case." },
+    { time: "03:10", description: "Prospect describes current pain with custom scripts", sentiment: "negative", type: "objection", quote: "Abbiamo poi settato noi delle delle qui per con delle thell specifiche... non è che abbiamo un grande monitoraggio", reasoning: "Strong negative sentiment regarding current manual monitoring solution." },
+    { time: "05:22", description: "Interest in Frontend/API correlation", sentiment: "positive", type: "feature", quote: "vedere se ci sono, per esempio, delle latenze esagerate andando verso il database", reasoning: "Explicit interest in a specific capability (correlation)." },
+    { time: "16:45", description: "Strong interest in Data Jobs & Airflow module", sentiment: "positive", type: "feature", quote: "si vede all'interno della dell'esecuzione come... Ah, ok, è bello.", reasoning: "Positive adjective 'bello' used in response to feature demo." },
+    { time: "30:26", description: "Prospect validates cost savings potential", sentiment: "positive", type: "engagement", quote: "Questo questo è interessante... andare a vedere effettivamente cosa stiamo spendendo", reasoning: "Validation of value proposition (cost)." },
+    { time: "31:29", description: "Maintenance burden of custom solutions", sentiment: "negative", type: "objection", quote: "se devi aggiungere una categoria, devi andare nel codice... costa veramente tanto", reasoning: "Direct mention of high cost/effort ('costa veramente tanto')." },
+    { time: "33:34", description: "Excitement about AI/ML observability", sentiment: "positive", type: "question", quote: "Posso chiedere solo mentre siamo qua la parte di cosa si può fare con la parte di AI observability", reasoning: "Proactive question indicates expansion opportunity." }
   ],
   painPoints: [
-    { category: "Tool Sprawl & Fragmentation", resonanceScore: 90, mentionCount: 3, evidence: "utilizzo magari di diversi tool per fare delle cose adiacenti" },
-    { category: "Maintenance Overhead", resonanceScore: 95, mentionCount: 4, evidence: "devi scriverti del codice Python e testarlo... costa veramente tanto" },
-    { category: "Lack of Visibility", resonanceScore: 85, mentionCount: 2, evidence: "It's a black box when things go down" }, // Keeping generic fallback if not exact match found, but here: "non è che abbiamo un grande monitoraggio"
-    { category: "Cost Management", resonanceScore: 80, mentionCount: 2, evidence: "Databricks comunque vi costava parecchio" }
+    { category: "Tool Sprawl & Fragmentation", resonanceScore: 90, mentionCount: 3, evidence: "utilizzo magari di diversi tool per fare delle cose adiacenti", reasoning: "Mention of 'diversi tool' implies fragmentation." },
+    { category: "Maintenance Overhead", resonanceScore: 95, mentionCount: 4, evidence: "devi scriverti del codice Python e testarlo... costa veramente tanto", reasoning: "High effort described for maintenance." },
+    { category: "Lack of Visibility", resonanceScore: 85, mentionCount: 2, evidence: "It's a black box when things go down", reasoning: "Inability to see into the system directly." },
+    { category: "Cost Management", resonanceScore: 80, mentionCount: 2, evidence: "Databricks comunque vi costava parecchio", reasoning: "Explicit mention of cost pain." }
   ],
   featureHeatmap: [
     { name: "Data Jobs (Airflow)", category: "Data", interestLevel: "High", timeSpentMinutes: 12 },
@@ -239,6 +239,43 @@ It is designed as a **baseline reference for AI-driven analysis of customer reac
 - Document intentionally optimized for machine parsing and semantic tagging.
 `;
 
+// FEW-SHOT EXAMPLES to ground the model
+const FEW_SHOT_EXAMPLES = `
+*** EXAMPLE ANALYSIS ***
+TRANSCRIPT SNIPPET:
+"Prospect: Yeah, we have like 50 different dashboards in Grafana and it's a mess to manage. When an alert fires, we don't know if it's the database or the app.
+SE: That sounds frustrating. How much time do you spend debugging?
+Prospect: Too much. Probably 4 hours a week per engineer."
+
+CORRECT OUTPUT MAPPING:
+{
+  "painPoints": [
+    {
+      "category": "Tool Sprawl & Fragmentation",
+      "resonanceScore": 85,
+      "mentionCount": 1,
+      "evidence": "we have like 50 different dashboards in Grafana and it's a mess",
+      "reasoning": "Prospect explicitly mentions '50 different dashboards' and 'mess to manage', indicating struggle with fragmented tools."
+    },
+    {
+      "category": "Maintenance Overhead",
+      "resonanceScore": 80,
+      "mentionCount": 1,
+      "evidence": "Probably 4 hours a week per engineer",
+      "reasoning": "Quantifiable impact on engineering time ('4 hours a week') directly maps to maintenance overhead."
+    },
+    {
+      "category": "Infrastructure Visibility",
+      "resonanceScore": 90,
+      "mentionCount": 1,
+      "evidence": "When an alert fires, we don't know if it's the database or the app",
+      "reasoning": "Direct admission of inability to perform root cause analysis during incidents."
+    }
+  ]
+}
+*** END EXAMPLE ***
+`;
+
 export const analyzeTranscript = async (transcript: string, metadata?: CallMetadata, participants?: Participant[]): Promise<AnalysisResult> => {
   const apiKey = process.env.API_KEY;
 
@@ -273,15 +310,18 @@ export const analyzeTranscript = async (transcript: string, metadata?: CallMetad
       
       ${contextBlock}
 
+      ${FEW_SHOT_EXAMPLES}
+
       *** START KNOWLEDGE BASE ***
       ${DATADOG_KNOWLEDGE_BASE}
       *** END KNOWLEDGE BASE ***
 
       INSTRUCTIONS:
       1. ANALYZE the transcript against the Knowledge Base.
-      2. IDENTIFY specific products, features, and pain points discussed.
-      3. CLASSIFY sentiment using the "Reaction Baseline" cues (e.g. "cost" is an objection, "single pane" is positive).
-      4. MAP findings to the following JSON schema categories strictly:
+      2. REAGON step-by-step before classifying (Chain-of-Thoughts).
+      3. IDENTIFY specific products, features, and pain points discussed.
+      4. CLASSIFY sentiment using the "Reaction Baseline" cues (e.g. "cost" is an objection, "single pane" is positive).
+      5. MAP findings to the following JSON schema categories strictly:
          - 'Monitoring': Maps to Infra, Network, APM, RUM, Synthetics, Database, Serverless.
          - 'Data': Maps to Logs, Pipelines, Metrics, Sensitive Data.
          - 'Security': Maps to Cloud Security, App Sec, SIEM.
@@ -298,11 +338,11 @@ export const analyzeTranscript = async (transcript: string, metadata?: CallMetad
     `;
 
     const response = await ai.models.generateContent({
-      model: 'gemini-3-flash-preview',
+      model: 'gemini-2.0-flash', // Upgrading to 2.0 Flash for better reasoning speed/quality balance
       contents: prompt,
       config: {
-        temperature: 0, // CRITICAL: Set to 0 for maximum determinism and consistency
-        systemInstruction: "You are a precise data extraction engine. Output strictly valid JSON matching the schema. Do not include markdown formatting or explanations.",
+        temperature: 0.1, // Slight temp to allow for creative reasoning in descriptions, but still low
+        systemInstruction: "You are a precise data extraction engine. You MUST justify your classification decisions in the 'reasoning' fields. Output strictly valid JSON matching the schema.",
         responseMimeType: "application/json",
         responseSchema: {
           type: Type.OBJECT,
@@ -325,7 +365,8 @@ export const analyzeTranscript = async (transcript: string, metadata?: CallMetad
                   description: { type: Type.STRING },
                   sentiment: { type: Type.STRING, enum: ["positive", "negative", "neutral"] },
                   type: { type: Type.STRING, enum: ["engagement", "objection", "question", "feature"] },
-                  quote: { type: Type.STRING, description: "Verbatim quote from the transcript" }
+                  quote: { type: Type.STRING, description: "Verbatim quote from the transcript" },
+                  reasoning: { type: Type.STRING, description: "Why was this event selected? specific cue used?" }
                 }
               }
             },
@@ -337,7 +378,8 @@ export const analyzeTranscript = async (transcript: string, metadata?: CallMetad
                   category: { type: Type.STRING, description: "Standardized pain point category" },
                   resonanceScore: { type: Type.NUMBER, description: "0-100, how deeply this pain was felt" },
                   mentionCount: { type: Type.NUMBER },
-                  evidence: { type: Type.STRING, description: "Direct quote from prospect" }
+                  evidence: { type: Type.STRING, description: "Direct quote from prospect" },
+                  reasoning: { type: Type.STRING, description: "Chain-of-thought: Why does this evidence map to this category?" }
                 }
               }
             },

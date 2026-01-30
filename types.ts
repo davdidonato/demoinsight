@@ -4,6 +4,7 @@ export interface KeyMoment {
   sentiment: 'positive' | 'negative' | 'neutral';
   type: 'engagement' | 'objection' | 'question' | 'feature';
   quote?: string;
+  reasoning?: string; // AI justification for this classification
 }
 
 export interface PainPoint {
@@ -11,6 +12,7 @@ export interface PainPoint {
   resonanceScore: number; // 0-100
   mentionCount: number;
   evidence: string;
+  reasoning?: string; // AI justification for this pain point
 }
 
 export interface FeatureInterest {

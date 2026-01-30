@@ -44,6 +44,13 @@ const App: React.FC = () => {
     const dateLine = lines.find(l => l.match(/\d{1,2}\s+\w+\s+\d{4}/)); // e.g. 21 gen 2026
     if (dateLine) date = dateLine.trim();
 
+    // Find the last timestamp to determine duration
+    const timestampRegex = /\b\d{1,2}:\d{2}(?::\d{2})?\b/g;
+    const allTimestamps = [...text.matchAll(timestampRegex)];
+    if (allTimestamps.length > 0) {
+      duration = allTimestamps[allTimestamps.length - 1][0];
+    }
+
     setMetadata({ title, customerName, date, duration });
 
     // Attempt to identify speakers
