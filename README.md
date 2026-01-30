@@ -8,6 +8,7 @@ DemoInsight is a powerful transcript analysis tool that leverages Google's Gemin
 - **Visual Dashboard**: Presents insights through an interactive dashboard with sentiment timelines, feature heatmaps, and key metrics.
 - **Flexible Input**: Support for analyzing text files (`.txt`) via drag-and-drop or direct text pasting.
 - **Datadog Product Alignment**: specialized (via the default prompt) to map conversations against a Datadog product knowledge base (can be customized in services).
+- **Built-in Demo**: Includes a sample "RenewCast" transcript to instantly demonstrate capabilities without needing a user file.
 
 ## Tech Stack
 
