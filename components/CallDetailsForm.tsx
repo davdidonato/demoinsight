@@ -278,7 +278,7 @@ const CallDetailsForm: React.FC<CallDetailsFormProps> = ({
                 </button>
                 <button
                     onClick={() => onConfirm(metadata, participants)}
-                    className="bg-black text-white px-8 py-3 rounded-lg font-medium text-sm hover:bg-gray-800 transition-all shadow-lg hover:shadow-xl flex items-center gap-2"
+                    className="bg-black text-white px-8 py-3 font-medium text-sm hover:bg-gray-800 transition-all shadow-lg hover:shadow-xl flex items-center gap-2"
                 >
                     <Play size={16} fill="currentColor" /> Start Analysis
                 </button>
