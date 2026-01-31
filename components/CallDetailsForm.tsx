@@ -68,14 +68,14 @@ const CallDetailsForm: React.FC<CallDetailsFormProps> = ({
                         <h3 className="text-sm font-bold uppercase text-gray-400 tracking-wider mb-4 flex items-center gap-2">
                             <Briefcase size={16} /> Call Info
                         </h3>
-                        <div className="space-y-4 bg-gray-50 p-6 rounded-lg border border-gray-100">
+                        <div className="space-y-4 bg-gray-50 p-6 border border-gray-100">
                             <div>
                                 <label className="block text-xs font-medium text-gray-500 mb-1">Demo Title</label>
                                 <input
                                     type="text"
                                     value={metadata.title}
                                     onChange={(e) => handleMetadataChange('title', e.target.value)}
-                                    className="w-full p-2 border border-gray-200 rounded focus:border-black outline-none transition-colors"
+                                    className="w-full p-2 border border-gray-200 focus:border-black outline-none transition-colors"
                                     placeholder="e.g. Datadog <> Customer Demo"
                                 />
                             </div>
@@ -85,7 +85,7 @@ const CallDetailsForm: React.FC<CallDetailsFormProps> = ({
                                     type="text"
                                     value={metadata.customerName}
                                     onChange={(e) => handleMetadataChange('customerName', e.target.value)}
-                                    className="w-full p-2 border border-gray-200 rounded focus:border-black outline-none transition-colors"
+                                    className="w-full p-2 border border-gray-200 focus:border-black outline-none transition-colors"
                                     placeholder="e.g. Acme Corp"
                                 />
                             </div>
@@ -96,14 +96,14 @@ const CallDetailsForm: React.FC<CallDetailsFormProps> = ({
                                         type="text"
                                         value={metadata.duration || ''}
                                         onChange={(e) => handleMetadataChange('duration', e.target.value)}
-                                        className="w-1/2 p-2 border border-gray-200 rounded focus:border-black outline-none transition-colors"
+                                        className="w-1/2 p-2 border border-gray-200 focus:border-black outline-none transition-colors"
                                         placeholder="Duration"
                                     />
                                     <input
                                         type="text"
                                         value={metadata.date || ''}
                                         onChange={(e) => handleMetadataChange('date', e.target.value)}
-                                        className="w-1/2 p-2 border border-gray-200 rounded focus:border-black outline-none transition-colors"
+                                        className="w-1/2 p-2 border border-gray-200 focus:border-black outline-none transition-colors"
                                         placeholder="Date"
                                     />
                                 </div>
