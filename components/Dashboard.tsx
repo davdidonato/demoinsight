@@ -44,7 +44,7 @@ const ScoreCard = ({ score, metrics, timeline }: { score: number, metrics: any, 
   );
 
   return (
-    <div className="bg-white p-8 border border-gray-200 rounded-lg h-full flex flex-col items-center relative">
+    <div className="bg-white p-8 border border-gray-200 h-full flex flex-col items-center relative">
       <h3 className="text-gray-400 text-xs font-bold uppercase tracking-widest mb-8 text-center w-full">Prospect Satisfaction</h3>
 
       <div className="relative mb-8">
