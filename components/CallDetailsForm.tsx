@@ -117,12 +117,12 @@ const CallDetailsForm: React.FC<CallDetailsFormProps> = ({
                         </h3>
                         <div className="space-y-3">
                             {/* Sales Engineer */}
-                            <div className="bg-white p-4 border border-gray-200 rounded-lg shadow-sm">
+                            <div className="bg-white p-4 border border-gray-200 shadow-sm">
                                 <div className="flex justify-between items-center mb-2">
-                                    <span className="text-xs font-mono bg-gray-100 px-2 py-1 rounded text-gray-600">SE</span>
+                                    <span className="text-xs font-mono bg-gray-100 px-2 py-1 text-gray-600">SE</span>
                                 </div>
                                 <select
-                                    className="w-full p-2 border border-gray-200 rounded focus:border-black outline-none bg-white"
+                                    className="w-full p-2 border border-gray-200 focus:border-black outline-none bg-white"
                                     value={participants.find(p => p.role === 'SE')?.name || ''}
                                     onChange={(e) => {
                                         const newName = e.target.value;
@@ -152,12 +152,12 @@ const CallDetailsForm: React.FC<CallDetailsFormProps> = ({
                             </div>
 
                             {/* Account Executive */}
-                            <div className="bg-white p-4 border border-gray-200 rounded-lg shadow-sm">
+                            <div className="bg-white p-4 border border-gray-200 shadow-sm">
                                 <div className="flex justify-between items-center mb-2">
-                                    <span className="text-xs font-mono bg-gray-100 px-2 py-1 rounded text-gray-600">AE</span>
+                                    <span className="text-xs font-mono bg-gray-100 px-2 py-1 text-gray-600">AE</span>
                                 </div>
                                 <select
-                                    className="w-full p-2 border border-gray-200 rounded focus:border-black outline-none bg-white"
+                                    className="w-full p-2 border border-gray-200 focus:border-black outline-none bg-white"
                                     value={participants.find(p => p.role === 'AE')?.name || ''}
                                     onChange={(e) => {
                                         const newName = e.target.value;
