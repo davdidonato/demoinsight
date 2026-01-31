@@ -134,37 +134,55 @@ const App: React.FC = () => {
     setView('paste');
   };
 
+  // Handler for "Try Demo Transcript" - directly analyze demo
+  const handleTryDemo = () => {
+    setTranscript(MOCK_TRANSCRIPT);
+    startConfirmation(MOCK_TRANSCRIPT);
+  };
+
+  // Handler for "Upload Your Call" - show upload options
+  const handleUploadCall = () => {
+    setView('upload-choice');
+  };
+
   return (
     <div className="min-h-screen bg-white text-black flex flex-col font-sans">
 
-      {/* Minimal Header - Only show if not on landing to keep landing pure */}
-      {view !== 'landing' && (
-        <header className="h-16 flex items-center justify-between px-8 border-b border-gray-100">
-          <div
-            className="font-bold text-lg tracking-tight cursor-pointer"
-            onClick={() => setView('landing')}
-          >
-            DemoInsight
-          </div>
-          {view === 'dashboard' && (
-            <button
-              onClick={() => {
-                setTranscript('');
-                setView('landing');
-              }}
-              className="text-sm text-gray-400 hover:text-black transition-colors"
-            >
-              Start Over
-            </button>
-          )}
-        </header>
+      {/* HOME/LANDING VIEW */}
+      {view === 'home' && (
+        <LandingPage 
+          onTryDemo={handleTryDemo}
+          onUploadCall={handleUploadCall}
+        />
       )}
 
-      {/* Main Content Area */}
-      <main className="flex-1 flex flex-col">
+      {/* Rest of the app views */}
+      {view !== 'home' && (
+        <>
+          {/* Minimal Header */}
+          <header className="h-16 flex items-center justify-between px-8 border-b border-gray-100">
+            <div className="font-bold text-lg tracking-tight">
+              DemoInsight
+            </div>
+            {view === 'dashboard' && (
+              <button
+                onClick={() => {
+                  setTranscript('');
+                  setResult(null);
+                  setView('upload-choice');
+                }}
+                className="text-sm text-gray-400 hover:text-black transition-colors"
+              >
+                Start Over
+              </button>
+            )}
+          </header>
 
-        {/* LANDING VIEW */}
-        {view === 'landing' && (
+          {/* Main Content Area */}
+          <main className="flex-1 flex flex-col">
+
+            {/* UPLOAD CHOICE VIEW */}
+            {view === 'upload-choice' && (
           <div className="flex-1 flex flex-col items-center justify-center p-8 animate-fade-in">
             <h1 className="text-4xl font-light mb-12 tracking-tight text-center">
               How would you like to analyze?
