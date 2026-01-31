@@ -232,7 +232,7 @@ const FeatureHeatmap = ({ features }: { features: FeatureInterest[] }) => {
   }, {} as Record<string, FeatureInterest[]>);
 
   return (
-    <div className="bg-white p-8 border border-gray-200 rounded-lg h-full">
+    <div className="bg-white p-8 border border-gray-200 h-full">
       <h3 className="text-gray-400 text-xs font-bold uppercase tracking-widest mb-6">Feature Interest</h3>
       <div className="grid grid-cols-1 md:grid-cols-3 gap-6">
         {Object.entries(grouped).map(([category, items]) => (
