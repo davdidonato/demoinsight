@@ -183,8 +183,6 @@ const App: React.FC = () => {
 
             {/* UPLOAD CHOICE VIEW */}
             {view === 'upload-choice' && (
-            {/* UPLOAD CHOICE VIEW */}
-            {view === 'upload-choice' && (
               <div className="flex-1 flex flex-col items-center justify-center p-8 animate-fade-in">
                 <h1 className="text-4xl font-light mb-12 tracking-tight text-center">
                   How would you like to analyze?
