@@ -283,14 +283,14 @@ const EmailGenerator = ({ draft }: { draft: AnalysisResult['emailDraft'] }) => {
   };
 
   return (
-    <div className="bg-white p-8 border border-gray-200 rounded-lg h-full flex flex-col">
+    <div className="bg-white p-8 border border-gray-200 h-full flex flex-col">
       <div className="flex justify-between items-center mb-6">
         <h3 className="text-gray-400 text-xs font-bold uppercase tracking-widest flex items-center gap-2">
           Suggested Follow-up
         </h3>
         <button
           onClick={handleCopy}
-          className="text-xs flex items-center gap-2 px-4 py-2 bg-black text-white hover:bg-gray-800 transition-colors rounded-sm"
+          className="text-xs flex items-center gap-2 px-4 py-2 bg-black text-white hover:bg-gray-800 transition-colors"
         >
           {copied ? <Check size={12} /> : <Copy size={12} />}
           {copied ? 'Copied' : 'Copy Text'}
