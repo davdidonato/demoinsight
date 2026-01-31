@@ -2,12 +2,14 @@ import React, { useState, useRef } from 'react';
 import { analyzeTranscript } from './services/geminiService';
 import Dashboard from './components/Dashboard';
 import CallDetailsForm from './components/CallDetailsForm';
-import { AnalysisResult, ViewState, MOCK_TRANSCRIPT, CallMetadata, Participant } from './types';
+import LandingPage from './components/LandingPage';
+import { AnalysisResult, MOCK_TRANSCRIPT, CallMetadata, Participant } from './types';
 import { Upload, FileText, Loader2, ArrowLeft, Clipboard, FileUp } from 'lucide-react';
 
+type AppView = 'home' | 'upload-choice' | 'paste' | 'confirming' | 'analyzing' | 'dashboard';
+
 const App: React.FC = () => {
-  // New state 'landing' for the initial choice
-  const [view, setView] = useState<'landing' | 'paste' | 'analyzing' | 'dashboard'>('landing');
+  const [view, setView] = useState<AppView>('home');
   const [transcript, setTranscript] = useState('');
   const [result, setResult] = useState<AnalysisResult | null>(null);
   const [error, setError] = useState<string | null>(null);
