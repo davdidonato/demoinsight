@@ -246,41 +246,41 @@ const App: React.FC = () => {
               </div>
             )}
 
-        {/* PASTE VIEW */}
-        {view === 'paste' && (
-          <div className="flex-1 flex flex-col items-center p-8 max-w-4xl mx-auto w-full">
-            <div className="w-full flex justify-between items-end mb-4">
-              <button
-                onClick={() => setView('landing')}
-                className="flex items-center gap-2 text-sm text-gray-500 hover:text-black transition-colors"
-              >
-                <ArrowLeft size={16} /> Back
-              </button>
-              <button onClick={loadDemo} className="text-xs text-gray-400 hover:text-black underline">
-                Load Sample
-              </button>
-            </div>
+            {/* PASTE VIEW */}
+            {view === 'paste' && (
+              <div className="flex-1 flex flex-col items-center p-8 max-w-4xl mx-auto w-full">
+                <div className="w-full flex justify-between items-end mb-4">
+                  <button
+                    onClick={() => setView('upload-choice')}
+                    className="flex items-center gap-2 text-sm text-gray-500 hover:text-black transition-colors"
+                  >
+                    <ArrowLeft size={16} /> Back
+                  </button>
+                  <button onClick={loadDemo} className="text-xs text-gray-400 hover:text-black underline">
+                    Load Sample
+                  </button>
+                </div>
 
-            <div className="w-full flex-1 relative">
-              <textarea
-                className="w-full h-[60vh] p-8 bg-gray-50 border border-transparent focus:bg-white focus:border-black focus:ring-0 rounded-lg resize-none font-mono text-sm leading-relaxed transition-all duration-300 outline-none"
-                placeholder="Paste your transcript here..."
-                value={transcript}
-                onChange={(e) => setTranscript(e.target.value)}
-              />
-            </div>
+                <div className="w-full flex-1 relative">
+                  <textarea
+                    className="w-full h-[60vh] p-8 bg-gray-50 border border-transparent focus:bg-white focus:border-black focus:ring-0 resize-none font-mono text-sm leading-relaxed transition-all duration-300 outline-none"
+                    placeholder="Paste your transcript here..."
+                    value={transcript}
+                    onChange={(e) => setTranscript(e.target.value)}
+                  />
+                </div>
 
-            <div className="w-full mt-6 flex justify-end">
-              <button
-                onClick={() => startConfirmation(transcript)}
-                disabled={!transcript}
-                className="bg-black text-white px-8 py-4 rounded-lg font-medium text-sm hover:bg-gray-800 disabled:opacity-30 disabled:cursor-not-allowed transition-all shadow-lg hover:shadow-xl translate-y-0 hover:-translate-y-1"
-              >
-                Next: Confirm Details
-              </button>
-            </div>
-          </div>
-        )}
+                <div className="w-full mt-6 flex justify-end">
+                  <button
+                    onClick={() => startConfirmation(transcript)}
+                    disabled={!transcript}
+                    className="bg-black text-white px-8 py-4 font-medium text-sm hover:bg-gray-800 disabled:opacity-30 disabled:cursor-not-allowed transition-all shadow-lg hover:shadow-xl translate-y-0 hover:-translate-y-1"
+                  >
+                    Next: Confirm Details
+                  </button>
+                </div>
+              </div>
+            )}
 
         {/* CONFIRMING VIEW */}
         {view === 'confirming' && (
