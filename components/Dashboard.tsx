@@ -150,7 +150,7 @@ const Timeline = ({ events }: { events: AnalysisResult['timeline'] }) => {
             <div className="flex-1 cursor-default">
               <div className="flex items-center gap-3 mb-1">
                 <span className="text-xs font-mono text-gray-400">{event.time}</span>
-                <span className={`text-[10px] uppercase tracking-wider font-medium px-2 py-0.5 rounded-full border ${event.sentiment === 'positive' ? 'border-gray-200 text-black' :
+                <span className={`text-[10px] uppercase tracking-wider font-medium px-2 py-0.5 border ${event.sentiment === 'positive' ? 'border-gray-200 text-black' :
                     event.sentiment === 'negative' ? 'border-gray-200 text-gray-500' : 'border-gray-100 text-gray-400'
                   }`}>
                   {event.sentiment}
