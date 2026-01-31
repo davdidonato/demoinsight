@@ -24,7 +24,7 @@ const ScoreCard = ({ score, metrics, timeline }: { score: number, metrics: any, 
   const positiveSignals = timeline.filter(t => t.sentiment === 'positive');
 
   const renderTooltip = (title: string, items: KeyMoment[], colorClass: string = 'text-gray-500') => (
-    <div className="absolute bottom-full left-1/2 -translate-x-1/2 mb-3 w-72 bg-black text-white p-4 rounded-md shadow-2xl opacity-0 invisible group-hover:opacity-100 group-hover:visible transition-all duration-200 z-50 pointer-events-none transform translate-y-2 group-hover:translate-y-0">
+    <div className="absolute bottom-full left-1/2 -translate-x-1/2 mb-3 w-72 bg-black text-white p-4 shadow-2xl opacity-0 invisible group-hover:opacity-100 group-hover:visible transition-all duration-200 z-50 pointer-events-none transform translate-y-2 group-hover:translate-y-0">
       <div className={`text-[10px] uppercase tracking-wider ${colorClass} mb-3 font-bold border-b border-gray-800 pb-2`}>
         {title}
       </div>
