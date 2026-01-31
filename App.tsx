@@ -183,66 +183,68 @@ const App: React.FC = () => {
 
             {/* UPLOAD CHOICE VIEW */}
             {view === 'upload-choice' && (
-          <div className="flex-1 flex flex-col items-center justify-center p-8 animate-fade-in">
-            <h1 className="text-4xl font-light mb-12 tracking-tight text-center">
-              How would you like to analyze?
-            </h1>
+            {/* UPLOAD CHOICE VIEW */}
+            {view === 'upload-choice' && (
+              <div className="flex-1 flex flex-col items-center justify-center p-8 animate-fade-in">
+                <h1 className="text-4xl font-light mb-12 tracking-tight text-center">
+                  How would you like to analyze?
+                </h1>
 
-            <div className="grid grid-cols-1 md:grid-cols-2 gap-8 w-full max-w-4xl">
+                <div className="grid grid-cols-1 md:grid-cols-2 gap-8 w-full max-w-4xl">
 
-              {/* Option 1: Drag & Drop / File Upload */}
-              <div
-                className="group relative h-80 border border-gray-200 rounded-lg flex flex-col items-center justify-center cursor-pointer hover:border-black hover:bg-gray-50 transition-all duration-300"
-                onClick={() => fileInputRef.current?.click()}
-                onDragOver={(e) => e.preventDefault()}
-                onDrop={handleDrop}
-              >
-                <input
-                  type="file"
-                  ref={fileInputRef}
-                  className="hidden"
-                  accept=".txt"
-                  onChange={handleFileUpload}
-                />
-                <div className="bg-gray-100 p-6 rounded-full mb-6 group-hover:scale-110 transition-transform duration-300">
-                  <FileUp size={40} className="text-black" />
+                  {/* Option 1: Drag & Drop / File Upload */}
+                  <div
+                    className="group relative h-80 border border-gray-200 flex flex-col items-center justify-center cursor-pointer hover:border-black hover:bg-gray-50 transition-all duration-300"
+                    onClick={() => fileInputRef.current?.click()}
+                    onDragOver={(e) => e.preventDefault()}
+                    onDrop={handleDrop}
+                  >
+                    <input
+                      type="file"
+                      ref={fileInputRef}
+                      className="hidden"
+                      accept=".txt"
+                      onChange={handleFileUpload}
+                    />
+                    <div className="bg-gray-100 p-6 mb-6 group-hover:scale-110 transition-transform duration-300">
+                      <FileUp size={40} className="text-black" />
+                    </div>
+                    <h2 className="text-xl font-medium mb-2">Attach txt file</h2>
+                    <p className="text-gray-400 text-sm">Drag and drop or browse</p>
+                  </div>
+
+                  {/* Option 2: Copy Paste */}
+                  <div
+                    className="group h-80 border border-gray-200 flex flex-col items-center justify-center cursor-pointer hover:border-black hover:bg-gray-50 transition-all duration-300"
+                    onClick={() => setView('paste')}
+                  >
+                    <div className="bg-gray-100 p-6 mb-6 group-hover:scale-110 transition-transform duration-300">
+                      <Clipboard size={40} className="text-black" />
+                    </div>
+                    <h2 className="text-xl font-medium mb-2">Paste transcript</h2>
+                    <p className="text-gray-400 text-sm">Copy directly from clipboard</p>
+                  </div>
+
+                  {/* Option 3: RenewCast Transcript */}
+                  <div
+                    className="group h-80 border border-gray-200 flex flex-col items-center justify-center cursor-pointer hover:border-black hover:bg-gray-50 transition-all duration-300 col-span-1 md:col-span-2"
+                    onClick={() => {
+                      setTranscript(MOCK_TRANSCRIPT);
+                      startConfirmation(MOCK_TRANSCRIPT);
+                    }}
+                  >
+                    <div className="bg-gray-100 p-6 mb-6 group-hover:scale-110 transition-transform duration-300">
+                      <FileText size={40} className="text-black" />
+                    </div>
+                    <h2 className="text-xl font-medium mb-2">Use built-in RenewCast Transcript</h2>
+                    <p className="text-gray-400 text-sm">Analyze the pre-loaded demo</p>
+                  </div>
+
                 </div>
-                <h2 className="text-xl font-medium mb-2">Attach txt file</h2>
-                <p className="text-gray-400 text-sm">Drag and drop or browse</p>
+
+                {error && <div className="mt-8 text-red-500 text-sm">{error}</div>}
               </div>
-
-              {/* Option 2: Copy Paste */}
-              <div
-                className="group h-80 border border-gray-200 rounded-lg flex flex-col items-center justify-center cursor-pointer hover:border-black hover:bg-gray-50 transition-all duration-300"
-                onClick={() => setView('paste')}
-              >
-                <div className="bg-gray-100 p-6 rounded-full mb-6 group-hover:scale-110 transition-transform duration-300">
-                  <Clipboard size={40} className="text-black" />
-                </div>
-                <h2 className="text-xl font-medium mb-2">Paste transcript</h2>
-                <p className="text-gray-400 text-sm">Copy directly from clipboard</p>
-              </div>
-
-              {/* Option 3: RenewCast Transcript */}
-              <div
-                className="group h-80 border border-gray-200 rounded-lg flex flex-col items-center justify-center cursor-pointer hover:border-black hover:bg-gray-50 transition-all duration-300 col-span-1 md:col-span-2"
-                onClick={() => {
-                  setTranscript(MOCK_TRANSCRIPT);
-                  startConfirmation(MOCK_TRANSCRIPT);
-                }}
-              >
-                <div className="bg-gray-100 p-6 rounded-full mb-6 group-hover:scale-110 transition-transform duration-300">
-                  <FileText size={40} className="text-black" />
-                </div>
-                <h2 className="text-xl font-medium mb-2">Use built-in RenewCast Transcript</h2>
-                <p className="text-gray-400 text-sm">Analyze the pre-loaded demo</p>
-              </div>
-
-            </div>
-
-            {error && <div className="mt-8 text-red-500 text-sm">{error}</div>}
-          </div>
-        )}
+            )}
 
         {/* PASTE VIEW */}
         {view === 'paste' && (
