@@ -125,7 +125,7 @@ const Timeline = ({ events }: { events: AnalysisResult['timeline'] }) => {
   };
 
   return (
-    <div className="bg-white p-8 border border-gray-200 rounded-lg h-full flex flex-col">
+    <div className="bg-white p-8 border border-gray-200 h-full flex flex-col">
       <h3 className="text-gray-400 text-xs font-bold uppercase tracking-widest mb-6">Key Moments</h3>
       <div className="overflow-y-auto custom-scrollbar flex-1 pr-4">
         {events.map((event, i) => (
