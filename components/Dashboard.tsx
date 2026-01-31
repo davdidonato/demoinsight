@@ -131,7 +131,7 @@ const Timeline = ({ events }: { events: AnalysisResult['timeline'] }) => {
         {events.map((event, i) => (
           <div key={i} className="group relative flex gap-4 mb-6 last:mb-0">
             {/* Tooltip for Timeline Item */}
-            <div className="absolute left-10 bottom-full mb-2 w-64 bg-black text-white p-3 rounded shadow-xl opacity-0 invisible group-hover:opacity-100 group-hover:visible transition-all duration-200 z-50 pointer-events-none">
+            <div className="absolute left-10 bottom-full mb-2 w-64 bg-black text-white p-3 shadow-xl opacity-0 invisible group-hover:opacity-100 group-hover:visible transition-all duration-200 z-50 pointer-events-none">
               <p className="text-xs text-gray-300 mb-2 font-mono">{event.time} - {event.type}</p>
               <p className="text-sm italic">"{event.quote || event.description}"</p>
               {/* Arrow */}
