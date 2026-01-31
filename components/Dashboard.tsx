@@ -169,7 +169,7 @@ const CustomTooltip = ({ active, payload, label }: any) => {
   if (active && payload && payload.length) {
     const data = payload[0].payload;
     return (
-      <div className="bg-black text-white p-4 rounded shadow-xl max-w-xs">
+      <div className="bg-black text-white p-4 shadow-xl max-w-xs">
         <p className="text-xs font-bold uppercase tracking-widest text-gray-500 mb-2">{data.category}</p>
         <div className="flex justify-between items-center mb-2 border-b border-gray-800 pb-2">
           <span className="text-sm">Resonance:</span>
