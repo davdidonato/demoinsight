@@ -245,7 +245,7 @@ const FeatureHeatmap = ({ features }: { features: FeatureInterest[] }) => {
                   className={`group relative px-3 py-2 border text-xs font-medium transition-all cursor-help ${getStyle(feature.interestLevel)}`}
                 >
                   {/* Tooltip */}
-                  <div className="absolute bottom-full left-1/2 -translate-x-1/2 mb-2 w-48 bg-black text-white p-3 rounded shadow-xl opacity-0 invisible group-hover:opacity-100 group-hover:visible transition-all duration-200 z-50 pointer-events-none">
+                  <div className="absolute bottom-full left-1/2 -translate-x-1/2 mb-2 w-48 bg-black text-white p-3 shadow-xl opacity-0 invisible group-hover:opacity-100 group-hover:visible transition-all duration-200 z-50 pointer-events-none">
                     <div className="flex justify-between border-b border-gray-700 pb-1 mb-1">
                       <span className="text-[10px] uppercase text-gray-400">Interest</span>
                       <span className="font-mono text-[10px]">{feature.interestLevel}</span>
