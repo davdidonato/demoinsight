@@ -282,35 +282,38 @@ const App: React.FC = () => {
               </div>
             )}
 
-        {/* CONFIRMING VIEW */}
-        {view === 'confirming' && (
-          <CallDetailsForm
-            initialMetadata={metadata}
-            initialParticipants={participants}
-            onConfirm={handleAnalyze}
-            onCancel={() => setView('landing')}
-          />
-        )}
+            {/* CONFIRMING VIEW */}
+            {view === 'confirming' && (
+              <CallDetailsForm
+                initialMetadata={metadata}
+                initialParticipants={participants}
+                onConfirm={handleAnalyze}
+                onCancel={() => setView('upload-choice')}
+              />
+            )}
 
-        {/* ANALYZING VIEW */}
-        {view === 'analyzing' && (
-          <div className="flex-1 flex flex-col items-center justify-center">
-            <Loader2 size={48} className="text-black animate-spin mb-8" />
-            <h3 className="text-xl font-light text-black tracking-wide">Processing...</h3>
-          </div>
-        )}
+            {/* ANALYZING VIEW */}
+            {view === 'analyzing' && (
+              <div className="flex-1 flex flex-col items-center justify-center">
+                <Loader2 size={48} className="text-black animate-spin mb-8" />
+                <h3 className="text-xl font-light text-black tracking-wide">Processing...</h3>
+              </div>
+            )}
 
-        {/* DASHBOARD VIEW */}
-        {view === 'dashboard' && result && (
-          <Dashboard
-            data={result}
-            onReset={() => {
-              setTranscript('');
-              setView('landing');
-            }}
-          />
-        )}
-      </main>
+            {/* DASHBOARD VIEW */}
+            {view === 'dashboard' && result && (
+              <Dashboard
+                data={result}
+                onReset={() => {
+                  setTranscript('');
+                  setResult(null);
+                  setView('upload-choice');
+                }}
+              />
+            )}
+          </main>
+        </>
+      )}
     </div>
   );
 };
