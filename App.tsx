@@ -300,7 +300,7 @@ const App: React.FC = () => {
 
             {/* DASHBOARD VIEW */}
             {view === 'dashboard' && result && (
-              <Dashboard
+              <InteractiveDashboard
                 data={result}
                 onReset={() => {
                   setTranscript('');
