@@ -1,6 +1,6 @@
 import React, { useState, useRef } from 'react';
 import { analyzeTranscript } from './services/geminiService';
-import Dashboard from './components/Dashboard';
+import InteractiveDashboard from './components/InteractiveDashboard';
 import CallDetailsForm from './components/CallDetailsForm';
 import LandingPage from './components/LandingPage';
 import { AnalysisResult, MOCK_TRANSCRIPT, CallMetadata, Participant } from './types';
