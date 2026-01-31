@@ -185,7 +185,7 @@ const CustomTooltip = ({ active, payload, label }: any) => {
 
 const PainPointsChart = ({ points }: { points: PainPoint[] }) => {
   return (
-    <div className="bg-white p-8 border border-gray-200 rounded-lg h-full">
+    <div className="bg-white p-8 border border-gray-200 h-full">
       <h3 className="text-gray-400 text-xs font-bold uppercase tracking-widest mb-6">Pain Point Resonance</h3>
       <div className="h-64 w-full">
         <ResponsiveContainer width="100%" height="100%">
