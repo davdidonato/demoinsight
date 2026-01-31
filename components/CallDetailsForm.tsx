@@ -198,7 +198,7 @@ const CallDetailsForm: React.FC<CallDetailsFormProps> = ({
                             {participants.filter(p => p.role === 'Prospect').map((p, idx) => {
                                 const realIndex = participants.indexOf(p);
                                 return (
-                                    <div key={realIndex} className="bg-white p-4 border border-gray-200 rounded-lg shadow-sm group relative">
+                                    <div key={realIndex} className="bg-white p-4 border border-gray-200 shadow-sm group relative">
                                         <button
                                             onClick={() => removeParticipant(realIndex)}
                                             className="absolute top-2 right-2 text-gray-300 hover:text-red-500 transition-colors opacity-0 group-hover:opacity-100"
@@ -210,7 +210,7 @@ const CallDetailsForm: React.FC<CallDetailsFormProps> = ({
                                                 type="text"
                                                 value={p.name}
                                                 onChange={(e) => handleParticipantChange(realIndex, 'name', e.target.value)}
-                                                className="flex-1 p-2 border border-gray-200 rounded focus:border-black outline-none font-medium"
+                                                className="flex-1 p-2 border border-gray-200 focus:border-black outline-none font-medium"
                                                 placeholder="Prospect Name"
                                             />
                                         </div>
@@ -218,7 +218,7 @@ const CallDetailsForm: React.FC<CallDetailsFormProps> = ({
                                             type="text"
                                             value={p.title || ''}
                                             onChange={(e) => handleParticipantChange(realIndex, 'title', e.target.value)}
-                                            className="w-full p-2 border border-gray-200 rounded focus:border-black outline-none text-sm text-gray-600"
+                                            className="w-full p-2 border border-gray-200 focus:border-black outline-none text-sm text-gray-600"
                                             placeholder="Job Title (e.g. VP Engineering)"
                                         />
                                         <div className="mt-2 flex items-center gap-2">
@@ -227,7 +227,7 @@ const CallDetailsForm: React.FC<CallDetailsFormProps> = ({
                                                 id={`dm-${realIndex}`}
                                                 checked={p.isDecisionMaker || false}
                                                 onChange={(e) => handleParticipantChange(realIndex, 'isDecisionMaker', e.target.checked)}
-                                                className="rounded border-gray-300 text-black focus:ring-black"
+                                                className="border-gray-300 text-black focus:ring-black"
                                             />
                                             <label htmlFor={`dm-${realIndex}`} className="text-xs text-gray-500">Decision Maker</label>
                                         </div>
@@ -236,12 +236,12 @@ const CallDetailsForm: React.FC<CallDetailsFormProps> = ({
                             })}
 
                             {/* Add New Prospect Input */}
-                            <div className="bg-gray-50 p-4 rounded-lg border border-dashed border-gray-300 flex flex-col gap-3">
+                            <div className="bg-gray-50 p-4 border border-dashed border-gray-300 flex flex-col gap-3">
                                 <input
                                     type="text"
                                     value={newProspectName}
                                     onChange={(e) => setNewProspectName(e.target.value)}
-                                    className="w-full bg-white p-2 border border-gray-200 rounded outline-none text-sm"
+                                    className="w-full bg-white p-2 border border-gray-200 outline-none text-sm"
                                     placeholder="New Prospect Name"
                                     onKeyDown={(e) => e.key === 'Enter' && addProspect()}
                                 />
@@ -250,14 +250,14 @@ const CallDetailsForm: React.FC<CallDetailsFormProps> = ({
                                         type="text"
                                         value={newProspectTitle}
                                         onChange={(e) => setNewProspectTitle(e.target.value)}
-                                        className="flex-1 bg-white p-2 border border-gray-200 rounded outline-none text-sm"
+                                        className="flex-1 bg-white p-2 border border-gray-200 outline-none text-sm"
                                         placeholder="Title"
                                         onKeyDown={(e) => e.key === 'Enter' && addProspect()}
                                     />
                                     <button
                                         onClick={addProspect}
                                         disabled={!newProspectName}
-                                        className="bg-gray-200 text-gray-600 p-2 rounded hover:bg-black hover:text-white transition-colors disabled:opacity-50"
+                                        className="bg-gray-200 text-gray-600 p-2 hover:bg-black hover:text-white transition-colors disabled:opacity-50"
                                     >
                                         <Plus size={20} />
                                     </button>
