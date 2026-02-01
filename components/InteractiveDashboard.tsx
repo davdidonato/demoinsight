@@ -19,8 +19,15 @@ interface InteractiveDashboardProps {
 
 const InteractiveDashboard: React.FC<InteractiveDashboardProps> = ({ data, onReset }) => {
   const [enhancedData, setEnhancedData] = useState<EnhancedAnalysisResult>(() => enhanceAnalysisResult(data));
+  const [salesIntelligence, setSalesIntelligence] = useState<SalesIntelligence>(() => generateSalesIntelligence(data));
   const [hasChanges, setHasChanges] = useState(false);
   const [showAddProduct, setShowAddProduct] = useState(false);
+  const [showSettings, setShowSettings] = useState(false);
+  const [settings, setSettings] = useState({
+    showDealScorecard: true,
+    showCommitmentTracker: true,
+    showCompetitiveAlerts: true,
+  });
 
   // Handle product importance change
   const handleUpdateFeature = (id: string, newImportance: ImportanceLevel) => {
