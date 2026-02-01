@@ -1,11 +1,16 @@
 import React, { useState, useMemo } from 'react';
 import { AnalysisResult } from '../types';
 import { EnhancedAnalysisResult, EditableFeatureInterest, ImportanceLevel } from '../types-enhanced';
+import { SalesIntelligence } from '../types-sales';
 import { enhanceAnalysisResult } from '../utils/enhanceAnalysis';
+import { generateSalesIntelligence } from '../utils/salesIntelligence';
 import Dashboard from './Dashboard';
 import ProductChip from './ProductChip';
 import ActionPanel from './ActionPanel';
-import { Download, Plus, Save } from 'lucide-react';
+import DealScorecardComponent from './DealScorecard';
+import CommitmentTrackerComponent from './CommitmentTracker';
+import CompetitiveAlertsComponent from './CompetitiveAlerts';
+import { Download, Plus, Save, Settings } from 'lucide-react';
 
 interface InteractiveDashboardProps {
   data: AnalysisResult;
