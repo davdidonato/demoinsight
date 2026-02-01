@@ -84,6 +84,15 @@ const InteractiveDashboard: React.FC<InteractiveDashboardProps> = ({ data, onRes
         </div>
         <div className="flex gap-3">
           <button
+            onClick={() => setShowSettings(!showSettings)}
+            className="px-4 py-2 border border-gray-300 text-sm hover:border-black transition-colors flex items-center gap-2"
+            data-testid="settings-button"
+            aria-label="Toggle settings"
+          >
+            <Settings size={16} />
+            Settings
+          </button>
+          <button
             onClick={handleExport}
             className="px-4 py-2 border border-gray-300 text-sm hover:border-black transition-colors flex items-center gap-2"
             data-testid="export-button"
@@ -94,6 +103,57 @@ const InteractiveDashboard: React.FC<InteractiveDashboardProps> = ({ data, onRes
           </button>
         </div>
       </div>
+
+      {/* Settings Panel */}
+      {showSettings && (
+        <div className="bg-gray-50 border border-gray-200 p-4 animate-fade-in">
+          <h3 className="text-sm font-semibold mb-3">Feature Visibility</h3>
+          <div className="space-y-2">
+            <label className="flex items-center gap-2 text-sm cursor-pointer">
+              <input
+                type="checkbox"
+                checked={settings.showDealScorecard}
+                onChange={(e) => setSettings({...settings, showDealScorecard: e.target.checked})}
+                className="cursor-pointer"
+              />
+              Deal Scorecard
+            </label>
+            <label className="flex items-center gap-2 text-sm cursor-pointer">
+              <input
+                type="checkbox"
+                checked={settings.showCommitmentTracker}
+                onChange={(e) => setSettings({...settings, showCommitmentTracker: e.target.checked})}
+                className="cursor-pointer"
+              />
+              Commitment Tracker
+            </label>
+            <label className="flex items-center gap-2 text-sm cursor-pointer">
+              <input
+                type="checkbox"
+                checked={settings.showCompetitiveAlerts}
+                onChange={(e) => setSettings({...settings, showCompetitiveAlerts: e.target.checked})}
+                className="cursor-pointer"
+              />
+              Competitive Alerts
+            </label>
+          </div>
+        </div>
+      )}
+
+      {/* Competitive Alerts (Top Priority - Show First) */}
+      {settings.showCompetitiveAlerts && salesIntelligence.competitiveAlerts.length > 0 && (
+        <CompetitiveAlertsComponent alerts={salesIntelligence.competitiveAlerts} />
+      )}
+
+      {/* Deal Scorecard */}
+      {settings.showDealScorecard && (
+        <DealScorecardComponent scorecard={salesIntelligence.dealScorecard} />
+      )}
+
+      {/* Commitment Tracker */}
+      {settings.showCommitmentTracker && (
+        <CommitmentTrackerComponent tracker={salesIntelligence.commitmentTracker} />
+      )}
 
       {/* Interactive Product Mentions */}
       <div className="bg-white p-6 border border-gray-200">
@@ -125,7 +185,7 @@ const InteractiveDashboard: React.FC<InteractiveDashboardProps> = ({ data, onRes
       {/* Action Intelligence Panel */}
       {enhancedData.actionIntelligence && (
         <div className="mt-8">
-          <h2 className="text-xl font-semibold mb-6">Recommended Actions</h2>
+          <h2 className="text-xl font-semibold mb-6">Additional Recommendations</h2>
           <ActionPanel intelligence={enhancedData.actionIntelligence} />
         </div>
       )}
